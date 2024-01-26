@@ -35,9 +35,7 @@ class Model private constructor() {
     interface GetAllPostsListener{
         fun onComplete(posts:List<Post>)
     }
-fun getUrl(callback: (String) -> Unit){
-    firebaseModel.getUrl(callback)
-}
+
     fun getAllUsers(callback: (List<User>) -> Unit) {
         firebaseModel.getAllUsers(callback)
 //        executor.execute {

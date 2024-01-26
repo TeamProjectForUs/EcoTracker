@@ -105,15 +105,20 @@ class FirebaseModel {
         val user = Firebase.auth.currentUser
 
         if (user != null) {
-            db.collection(USERS_COLLECTION_PATH).document(user.uid).set(
-                mapOf(
-                    "name" to name,
-                    "uri" to uri,
-                    "lastUpdated" to FieldValue.serverTimestamp()
 
-                ), SetOptions.merge()).addOnCompleteListener {
-                callback()
+            dbimage.child(user.uid).putFile(uri.toUri()).addOnSuccessListener { task ->
+                task.metadata!!.reference!!.downloadUrl.addOnSuccessListener {
+                    db.collection(USERS_COLLECTION_PATH).document(user.uid).set(
+                        mapOf(
+                            "name" to name,
+                            "uri" to it,
+                            "lastUpdated" to FieldValue.serverTimestamp()
+                        ), SetOptions.merge()
+                    ).addOnCompleteListener {
+                        callback()
+                    }
                 }
+            }
         }
     }
     fun addUser(name: String,email: String,password: String,uri:String,activity:Activity, callback: (Boolean) -> Unit) {
@@ -169,12 +174,7 @@ class FirebaseModel {
         }
 
     }
-    fun getUrl(callback: (String) -> Unit){
-        val uid=auth.currentUser?.uid
-       // val storageReference= dbimage.getReference("Posts/")
-       // val imageRef = storageReference.child("Posts/$uid")
-       // callback(imageRef.downloadUrl.toString())
-    }
+
     fun updatePost(postUid:String,name: String,description:String,uri:String,callback: () -> Unit){
         db.collection(POSTS_COLLECTION_PATH).document(postUid).set(mapOf(
             "name" to name,
@@ -189,27 +189,20 @@ class FirebaseModel {
         val postUid=UUID.randomUUID()
        // post.postUid= postUid.toString()
         post.postUid=firebaseref.push().key!!
-        dbimage.child(post.postUid).putFile(post.uri.toUri()).addOnSuccessListener {task->
+        dbimage.child(post.postUid).putFile(post.uri.toUri()).addOnSuccessListener { task ->
             task.metadata!!.reference!!.downloadUrl.addOnSuccessListener {
-                post.uri=it.toString()
-                db.collection(POSTS_COLLECTION_PATH).document(post.postUid).set(post.json).addOnSuccessListener {
-                    callback()
-                }
-
-                //firebaseref.child(post.postUid).setValue(post).addOnCompleteListener {
-
+                post.uri = it.toString()
+                db.collection(POSTS_COLLECTION_PATH).document(post.postUid).set(post.json)
+                    .addOnSuccessListener {
+                        callback()
+                    }
             }
-
         }
 
-//       // val storageReference= dbimage.getReference("Posts/${post.postUid}")
-//        storageReference.putFile(post.uri.toUri()).addOnSuccessListener {
-//            val imageRef = storageReference.child("Posts/${post.postUid}")
-//            post.uri=imageRef.downloadUrl.toString()
-//            db.collection(POSTS_COLLECTION_PATH).document(post.postUid).set(post.json).addOnSuccessListener {}
-//            callback()
-//        }
     }
+
+
+
 
 
     fun getMyPosts(callback: (List<Post>?) -> Unit) {
