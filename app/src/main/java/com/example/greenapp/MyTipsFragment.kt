@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import com.example.greenapp.Model.Model
@@ -43,8 +44,10 @@ class MyTipsFragment : Fragment() {
         actionBar?.setTitle("My tips")
 
         Model.instance.getAllTips {
-            var tip= it?.get(0)
+            var tip:Tip? = it?.get(0)
+
             if (tip != null) {
+
                 TipAlert(tip)
             }
 
@@ -57,9 +60,12 @@ class MyTipsFragment : Fragment() {
         super.onCreateOptionsMenu(menu, inflater)
     }
     fun TipAlert(tip: Tip) {
-        val dilaogBinding = layoutInflater.inflate(R.layout.fragment_tip_alert, null)
         messageTextView= view?.findViewById(R.id.alertMessage)
-        messageTextView?.text=tip.description
+        messageTextView?.setText(tip.description)
+        val dilaogBinding = layoutInflater.inflate(R.layout.fragment_tip_alert, null)
+
+        Toast.makeText(context, " ${tip.description}", Toast.LENGTH_SHORT).show()
+
         val myDialog = Dialog(requireActivity())
         myDialog.setContentView(dilaogBinding)
 

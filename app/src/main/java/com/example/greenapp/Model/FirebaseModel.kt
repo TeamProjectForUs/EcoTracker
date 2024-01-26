@@ -8,6 +8,8 @@ import com.google.firebase.Timestamp
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.firestoreSettings
@@ -16,6 +18,7 @@ import com.google.firebase.firestore.memoryCacheSettings
 import com.google.firebase.firestore.persistentCacheSettings
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
 import com.squareup.picasso.Picasso
 import java.util.UUID
@@ -23,9 +26,10 @@ import java.util.UUID
 
 
 class FirebaseModel {
-    private var dbimage=Firebase.storage
+    private var dbimage: StorageReference
     private val db = Firebase.firestore
     private var auth: FirebaseAuth
+    private lateinit var firebaseref: DatabaseReference
 
     companion object {
         const val USERS_COLLECTION_PATH = "users"
@@ -39,7 +43,9 @@ class FirebaseModel {
         }
         db.firestoreSettings = settings
         auth = Firebase.auth
-        dbimage= FirebaseStorage.getInstance()
+       // dbimage= FirebaseStorage.getInstance()
+        dbimage=FirebaseStorage.getInstance().getReference("images")
+        firebaseref=FirebaseDatabase.getInstance().getReference("posts")
 
     }
     fun getAllTips(callback: (List<Tip>) -> Unit){
@@ -165,9 +171,9 @@ class FirebaseModel {
     }
     fun getUrl(callback: (String) -> Unit){
         val uid=auth.currentUser?.uid
-        val storageReference= dbimage.getReference("Posts/")
-        val imageRef = storageReference.child("Posts/$uid")
-        callback(imageRef.downloadUrl.toString())
+       // val storageReference= dbimage.getReference("Posts/")
+       // val imageRef = storageReference.child("Posts/$uid")
+       // callback(imageRef.downloadUrl.toString())
     }
     fun updatePost(postUid:String,name: String,description:String,uri:String,callback: () -> Unit){
         db.collection(POSTS_COLLECTION_PATH).document(postUid).set(mapOf(
@@ -181,12 +187,28 @@ class FirebaseModel {
     fun addPost(post: Post, callback: () -> Unit) {
 
         val postUid=UUID.randomUUID()
-        post.postUid= postUid.toString()
-        val storageReference= dbimage.getReference("Posts/${post.postUid}")
-        storageReference.putFile(post.uri.toUri()).addOnSuccessListener {
-            db.collection(POSTS_COLLECTION_PATH).document(post.postUid).set(post.json).addOnSuccessListener {}
-            callback()
+       // post.postUid= postUid.toString()
+        post.postUid=firebaseref.push().key!!
+        dbimage.child(post.postUid).putFile(post.uri.toUri()).addOnSuccessListener {task->
+            task.metadata!!.reference!!.downloadUrl.addOnSuccessListener {
+                post.uri=it.toString()
+                db.collection(POSTS_COLLECTION_PATH).document(post.postUid).set(post.json).addOnSuccessListener {
+                    callback()
+                }
+
+                //firebaseref.child(post.postUid).setValue(post).addOnCompleteListener {
+
+            }
+
         }
+
+//       // val storageReference= dbimage.getReference("Posts/${post.postUid}")
+//        storageReference.putFile(post.uri.toUri()).addOnSuccessListener {
+//            val imageRef = storageReference.child("Posts/${post.postUid}")
+//            post.uri=imageRef.downloadUrl.toString()
+//            db.collection(POSTS_COLLECTION_PATH).document(post.postUid).set(post.json).addOnSuccessListener {}
+//            callback()
+//        }
     }
 
 

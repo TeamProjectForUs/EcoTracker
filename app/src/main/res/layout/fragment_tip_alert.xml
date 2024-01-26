@@ -50,7 +50,7 @@
                     android:layout_marginBottom="10dp"
                     android:gravity="center"
                     android:padding="10dp"
-                    android:text="how are you " />
+                    android:text=" " />
                 <View
                     android:id="@+id/alertView"
                     android:layout_width="match_parent"

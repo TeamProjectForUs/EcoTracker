@@ -10,7 +10,7 @@ import com.example.greenapp.base.MyApplication
 import com.example.greenapp.Model.Post
 
 
-@Database(entities = [Post::class], version = 4)
+@Database(entities = [Post::class], version = 5)
 
 abstract class AppLocalDbRepository : RoomDatabase() {
     abstract fun postDao(): PostDao

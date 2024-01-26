@@ -60,6 +60,7 @@ class AddPostFragment : Fragment() {
         descriptionTextField=view.findViewById(R.id.description)
 
         val pickImage= registerForActivityResult(ActivityResultContracts.GetContent()) {
+           // binding.imageField.setImageURI(it)
             Picasso.get().load(it).resize(1000, 1000).centerInside().into(imageField)
             if (it != null) {
                 uri = it

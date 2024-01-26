@@ -51,13 +51,9 @@ class PostViewHolder (
 
     fun bind(post: Post?) {
         this.post = post
-        var uri:String=" "
-        Model.instance.getUrl {
-            uri=it
-        }
-
         nameTextView?.text = post?.name
         desTextView?.text=post?.description
+
         Picasso.get().load(post?.uri?.toUri()).resize(1000, 1000).centerInside().into(avatar)
         // idTextView?.text = post?.id
         postCheckbox?.apply {
