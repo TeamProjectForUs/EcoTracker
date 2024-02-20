@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "95638192975",
+    "project_id": "ecotracker-335bd",
+    "storage_bucket": "ecotracker-335bd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:95638192975:android:ee040578706efbe8293b3a",
+        "android_client_info": {
+          "package_name": "com.example.ecotracker"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDgyGRORTohGnK4KlMJ8oGlcR27EHIlS5A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

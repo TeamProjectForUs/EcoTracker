@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="75dp"
+        android:layout_marginTop="80dp"
+        android:text="EcoTracker"
+        android:textSize="40dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="61dp"
+        android:layout_height="57dp"
+        android:layout_marginStart="-30dp"
+        android:layout_marginTop="-105dp"
+        android:rotation="175"
+        android:src="@drawable/leaf"
+        app:layout_constraintEnd_toEndOf="@id/textView"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@id/textView"
+        app:layout_constraintTop_toBottomOf="@id/textView" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="61dp"
+        android:layout_height="57dp"
+        android:layout_marginTop="-40dp"
+        android:layout_marginStart="-30dp"
+        android:rotation="44"
+        android:src="@drawable/leaf"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@id/textView"
+        app:layout_constraintTop_toBottomOf="@id/textView" />
+
+
+    <LinearLayout
+        android:id="@+id/feedbuttonLayout"
+        android:layout_width="match_parent"
+        android:paddingHorizontal="16dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_height="wrap_content">
+
+
+    <Button
+        android:id="@+id/feedbutton"
+        android:layout_width="78dp"
+        android:layout_height="37dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:backgroundTint="#D0E3D8"
+        android:text="feed"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@android:color/black"
+        android:textSize="15dp"
+        app:strokeColor="#000000"
+        app:strokeWidth="1dp" />
+    </LinearLayout>
+
+
+
+    <ImageView
+        android:id="@+id/imageButton"
+        android:layout_margin="16dp"
+        android:layout_width="33dp"
+        android:layout_height="30dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/menu"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
+
+    <!-- RecyclerView replacing fragmentContainerView3 -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="365dp"
+        android:layout_height="431dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/feedbuttonLayout"
+        app:layout_constraintVertical_bias="0.0"
+        tools:listitem="@layout/item_post" />
+</androidx.constraintlayout.widget.ConstraintLayout>
