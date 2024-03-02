@@ -1,19 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/btnMyPosts"
-        android:title="Posts" />
+        android:id="@+id/btn_ecotips"
+        android:title="@string/ecotips" />
+
     <item
-        android:id="@+id/btnMyGoals"
-        android:title="Goals" />
+        android:id="@+id/btn_settings"
+        android:title="@string/settings" />
+
     <item
-        android:id="@+id/btnMyTips"
-        android:title="Tips" />
-    <item
-        android:id="@+id/btnLogoutProfile"
-        android:icon="@drawable/logout_fill0_wght400_grad0_opsz24"
-        app:showAsAction="ifRoom"
-        android:title="Logout" />
+        android:id="@+id/btnLogout_menu"
+        android:title="@string/sign_out" />
 </menu>

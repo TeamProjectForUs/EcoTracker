@@ -9,7 +9,7 @@
         android:id="@+id/startFragment"
         android:name="com.example.greenapp.StartFragment"
         android:label="fragment_start"
-        tools:layout="@layout/fragment_start" >
+        tools:layout="@layout/fragment_start">
         <action
             android:id="@+id/action_startFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
@@ -20,12 +20,17 @@
             android:id="@+id/action_startFragment_to_feedFragment"
             app:destination="@id/feedFragment" />
     </fragment>
-    <action android:id="@+id/action_global_startFragment" app:destination="@id/startFragment" />
+    <action
+        android:id="@+id/action_global_startFragment"
+        app:destination="@id/startFragment" />
+    <action
+        android:id="@+id/action_global_profileViewFragment"
+        app:destination="@id/profileViewFragment" />
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.example.greenapp.Modules.Connection.LoginFragment"
         android:label="fragment_login"
-        tools:layout="@layout/fragment_login" >
+        tools:layout="@layout/fragment_login">
         <action
             android:id="@+id/action_loginFragment_to_startFragment"
             app:destination="@id/startFragment" />
@@ -37,7 +42,7 @@
         android:id="@+id/registerFragment"
         android:name="com.example.greenapp.Modules.Connection.RegisterFragment"
         android:label="fragment_register"
-        tools:layout="@layout/fragment_register" >
+        tools:layout="@layout/fragment_register">
         <action
             android:id="@+id/action_registerFragment_to_startFragment"
             app:destination="@id/startFragment" />
@@ -49,7 +54,7 @@
         android:id="@+id/feedFragment"
         android:name="com.example.greenapp.FeedFragment"
         android:label="fragment_feed"
-        tools:layout="@layout/fragment_feed" >
+        tools:layout="@layout/fragment_feed">
         <action
             android:id="@+id/action_feedFragment_self"
             app:destination="@id/feedFragment" />
@@ -57,8 +62,8 @@
             android:id="@+id/action_feedFragment_to_addPostFragment"
             app:destination="@id/addPostFragment" />
         <action
-            android:id="@+id/action_feedFragment_to_profileViewFragment"
-            app:destination="@id/profileViewFragment" />
+            android:id="@+id/action_feedFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
         <action
             android:id="@+id/action_feedFragment_to_postFullViewFragment"
             app:destination="@id/postFullViewFragment" />
@@ -67,7 +72,7 @@
         android:id="@+id/addPostFragment"
         android:name="com.example.greenapp.Modules.Connection.AddPostFragment"
         android:label="fragment_add_post"
-        tools:layout="@layout/fragment_add_post" >
+        tools:layout="@layout/fragment_add_post">
         <action
             android:id="@+id/action_addPostFragment_to_feedFragment"
             app:destination="@id/feedFragment" />
@@ -79,7 +84,7 @@
         android:id="@+id/myPostsFragment"
         android:name="com.example.greenapp.MyPostsFragment"
         android:label="fragment_my_posts"
-        tools:layout="@layout/fragment_my_posts" >
+        tools:layout="@layout/fragment_my_posts">
         <action
             android:id="@+id/action_myPostsFragment_to_profileViewFragment"
             app:destination="@id/profileViewFragment" />
@@ -94,7 +99,7 @@
         android:id="@+id/myGoalsFragment"
         android:name="com.example.greenapp.MyGoalsFragment"
         android:label="fragment_my_goals"
-        tools:layout="@layout/fragment_my_goals" >
+        tools:layout="@layout/fragment_my_goals">
         <action
             android:id="@+id/action_myGoalsFragment_to_profileViewFragment"
             app:destination="@id/profileViewFragment" />
@@ -111,7 +116,7 @@
         android:id="@+id/profileViewFragment"
         android:name="com.example.greenapp.ProfileViewFragment"
         android:label="fragment_profile_view"
-        tools:layout="@layout/fragment_profile_view" >
+        tools:layout="@layout/fragment_profile_view">
         <action
             android:id="@+id/action_profileViewFragment_to_myPostsFragment"
             app:destination="@id/myPostsFragment" />
@@ -129,7 +134,7 @@
         android:id="@+id/postFullViewFragment"
         android:name="com.example.greenapp.Modules.Posts.PostFullViewFragment"
         android:label="fragment_post_full_view"
-        tools:layout="@layout/fragment_post_full_view" >
+        tools:layout="@layout/fragment_post_full_view">
         <action
             android:id="@+id/action_postFullViewFragment_to_feedFragment"
             app:destination="@id/feedFragment" />
@@ -152,5 +157,16 @@
             android:id="@+id/action_postFullViewFragment_to_myPostsFragment"
             app:destination="@id/myPostsFragment" />
     </fragment>
-    <action android:id="@+id/action_global_postFullViewFragment" app:destination="@id/postFullViewFragment"/>
+    <action
+        android:id="@+id/action_global_postFullViewFragment"
+        app:destination="@id/postFullViewFragment" />
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.greenapp.ProfileFragment"
+        android:label="ProfileFragment"
+        tools:layout="@layout/fragment_profile">
+        <action
+            android:id="@+id/action_profileFragment_to_profileViewFragment"
+            app:destination="@id/profileViewFragment" />
+    </fragment>
 </navigation>

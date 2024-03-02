@@ -26,8 +26,7 @@ import com.example.greenapp.databinding.FragmentFeedBinding
 
 
 
-class FeedFragment : Fragment() {
-
+class FeedFragment : BaseMenuFragment() {
 
     private var postsRecyclerView: RecyclerView? = null
     private var adapter: PostsRecyclerAdapter? = null
@@ -42,9 +41,6 @@ class FeedFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-        val actionBar = (activity as AppCompatActivity).supportActionBar
-        actionBar?.setTitle("Feed")
 
         _binding = FragmentFeedBinding.inflate(inflater, container, false)
         val view = binding.root

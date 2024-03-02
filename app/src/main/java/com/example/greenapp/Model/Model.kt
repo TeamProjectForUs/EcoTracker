@@ -11,7 +11,7 @@ import java.util.concurrent.Executors
 
 class Model private constructor() {
 
-    enum class LoadingState{
+    enum class LoadingState {
         LOADING,
         LOADED
     }
@@ -21,9 +21,13 @@ class Model private constructor() {
     private var mainHandler = HandlerCompat.createAsync(Looper.getMainLooper())
     private val firebaseModel = FirebaseModel()
     private val posts: LiveData<MutableList<Post>>? = null
-    private val post:LiveData<MutableList<Post>>?=null
+    private val post: LiveData<MutableList<Post>>? = null
     val postsListLoadingState: MutableLiveData<LoadingState> = MutableLiveData(LoadingState.LOADED)
 
+
+    fun getFireBaseModel(): FirebaseModel {
+        return this.firebaseModel
+    }
 
     companion object {
         val instance: Model = Model()
@@ -32,8 +36,9 @@ class Model private constructor() {
     interface GetAllUsersListener {
         fun onComplete(users: List<User>)
     }
-    interface GetAllPostsListener{
-        fun onComplete(posts:List<Post>)
+
+    interface GetAllPostsListener {
+        fun onComplete(posts: List<Post>)
     }
 
     fun getAllUsers(callback: (List<User>) -> Unit) {
@@ -49,13 +54,18 @@ class Model private constructor() {
 //            }
 //        }
     }
-    fun getCurrentUser(callback: (List<String>) -> Unit){
-        firebaseModel.getCurrentUser(callback)
-    }
 
-    fun addUser(name:String,email: String,password: String,uri: String,activity: Activity ,callback: (Boolean) -> Unit) {
 
-        firebaseModel.addUser(name,email,password,uri,activity ,callback)
+    fun addUser(
+        name: String,
+        email: String,
+        password: String,
+        uri: String,
+        activity: Activity,
+        callback: (Boolean) -> Unit,
+    ) {
+
+        firebaseModel.addUser(name, email, password, uri, activity, callback)
 //        executor.execute {
 //            database.userDao().insert(user)
 //            mainHandler.post {
@@ -63,23 +73,26 @@ class Model private constructor() {
 //            }
 //        }
     }
-    fun updateUser(name: String,uri: String,callback: () -> Unit){
-        firebaseModel.updateUser(name,uri){
+
+    fun updateUser(name: String, uri: String, callback: () -> Unit) {
+        firebaseModel.updateUser(name, uri) {
             callback()
         }
     }
-    fun login(email:String,password:String,activity: Activity ,callback: (Boolean) -> Unit){
-        firebaseModel.login(email,password,activity ,callback)
+
+    fun login(email: String, password: String, activity: Activity, callback: (Boolean) -> Unit) {
+        firebaseModel.login(email, password, activity, callback)
     }
-    fun signOut(){
+
+    fun signOut() {
         firebaseModel.signOut()
     }
 
-    fun getUserByName(name:String,callback: (List<User>?) -> Unit){
-        firebaseModel.getUserByName(name,callback)
+    fun getUserByName(name: String, callback: (List<User>?) -> Unit) {
+        firebaseModel.getUserByName(name, callback)
     }
 
-    fun getAllTips(callback: (List<Tip>?) -> Unit){
+    fun getAllTips(callback: (List<Tip>?) -> Unit) {
         firebaseModel.getAllTips(callback)
     }
 
@@ -88,13 +101,13 @@ class Model private constructor() {
     }
 
 
-    fun getAllPosts():LiveData<MutableList<Post>>{
+    fun getAllPosts(): LiveData<MutableList<Post>> {
         refreshAllPosts()
-        return posts?:database.postDao().getAll()
+        return posts ?: database.postDao().getAll()
         //firebaseModel.getAllPosts(callback)
     }
 
-     fun refreshAllPosts() {
+    fun refreshAllPosts() {
         postsListLoadingState.value = LoadingState.LOADING
 
         // 1. Get last local update
@@ -122,29 +135,35 @@ class Model private constructor() {
         }
 
     }
-    fun updatePost(postUid:String,name: String,description:String,uri:String,callback: () -> Unit){
-        firebaseModel.updatePost(postUid,name,description,uri){
+
+    fun updatePost(
+        postUid: String,
+        name: String,
+        description: String,
+        uri: String,
+        callback: () -> Unit,
+    ) {
+        firebaseModel.updatePost(postUid, name, description, uri) {
             refreshAllPosts()
             callback()
         }
 
     }
 
-    fun getMyPosts(callback: (List<Post>?) -> Unit){
+    fun getMyPosts(callback: (List<Post>?) -> Unit) {
         firebaseModel.getMyPosts(callback)
     }
-    fun addPost(post: Post, callback: () -> Unit){
-        firebaseModel.addPost(post){
+
+    fun addPost(post: Post, callback: () -> Unit) {
+        firebaseModel.addPost(post) {
             refreshAllPosts()
             callback()
         }
     }
+
     fun getPostById(postUid: String): LiveData<MutableList<Post>> {
-        return post?:database.postDao().getPostById(postUid)
+        return post ?: database.postDao().getPostById(postUid)
     }
-
-
-
 
 
 }

@@ -31,36 +31,32 @@ class MyTipsFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         // Inflate the layout for this fragment
-        val view= inflater.inflate(R.layout.fragment_my_tips, container, false)
+        val view = inflater.inflate(R.layout.fragment_my_tips, container, false)
         setupUI(view)
         return view
-
     }
-    fun setupUI(view:View){
-        val actionBar = (activity as AppCompatActivity).supportActionBar
-        actionBar?.setTitle("My tips")
 
+    fun setupUI(view: View) {
         Model.instance.getAllTips {
-            var tip:Tip? = it?.get(0)
+            var tip: Tip? = it?.get(0)
 
             if (tip != null) {
-
                 TipAlert(tip)
             }
-
         }
-
-
     }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         menu.clear()
         super.onCreateOptionsMenu(menu, inflater)
     }
+
+
     fun TipAlert(tip: Tip) {
-        messageTextView= view?.findViewById(R.id.alertMessage)
+        messageTextView = view?.findViewById(R.id.alertMessage)
         messageTextView?.setText(tip.description)
         val dilaogBinding = layoutInflater.inflate(R.layout.fragment_tip_alert, null)
 
