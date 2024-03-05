@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:padding="8dp"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:padding="8dp">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/ivPostListRowAvatarCard"
@@ -38,12 +38,13 @@
         app:layout_constraintStart_toEndOf="@id/ivPostListRowAvatarCard"
         app:layout_constraintTop_toTopOf="parent">
 
+        <!-- Add LinearLayout for content inside the CardView -->
         <LinearLayout
-            android:layout_width="275dp"
+            android:layout_width="260dp"
             android:layout_height="wrap_content"
-
-            android:layout_marginHorizontal="16dp"
             android:orientation="vertical">
+
+            <!-- Change ic_edit with your icon drawable -->
 
             <ImageView
                 android:id="@+id/tvPostListRowImage"
@@ -56,7 +57,7 @@
 
             <TextView
                 android:id="@+id/tvPostListRowDes"
-                android:layout_width="match_parent"
+                android:layout_width="247dp"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="8dp"
                 android:layout_marginStart="8dp"
@@ -64,6 +65,15 @@
                 android:textColor="@color/black"
                 android:textSize="16sp" />
         </LinearLayout>
+
+        <ImageView
+            android:id="@+id/ivEdit"
+            android:layout_width="35dp"
+            android:layout_height="30dp"
+            android:layout_gravity="end"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:src="@drawable/edit_icon" />
     </androidx.cardview.widget.CardView>
 
     <CheckBox
@@ -74,7 +84,6 @@
         android:buttonTint="#FEFEFE"
         android:focusable="false"
         app:layout_constraintBottom_toBottomOf="parent"
-
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

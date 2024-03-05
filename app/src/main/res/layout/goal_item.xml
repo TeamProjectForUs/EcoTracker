@@ -62,10 +62,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/favorite_fill0_wght400_grad0_opsz24"
-            android:text="Publish goal"
+            android:text="Publish Goal"
             android:layout_marginHorizontal="8dp"
             android:textSize="12sp"
             app:cornerRadius="100dp"
+            android:textAllCaps="false"
             app:strokeColor="@color/black"
             app:strokeWidth="1dp" />
 
