@@ -2,43 +2,32 @@ package com.example.greenapp.Modules.Connection
 
 import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.Navigation
 import com.example.greenapp.BaseFragment
-import com.example.greenapp.Model.Model
 import com.example.greenapp.R
 import com.example.greenapp.Model.Post
+import com.example.greenapp.SharedViewModel
 import com.squareup.picasso.Picasso
 
 
 class AddPostFragment : BaseFragment() {
 
-    private var nameTextField: EditText? = null
-    private var photoButton: Button? = null
+    private var photoButton: ImageView? = null
     private var descriptionTextField: EditText? = null
-    private var imageField: ImageView? = null
 
-    // private var messageTextView: TextView? = null
     private var saveButton: Button? = null
     private var cancelButton: Button? = null
     private var uri: Uri? = null
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
-
+    private lateinit var viewModel: SharedViewModel
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
@@ -46,22 +35,17 @@ class AddPostFragment : BaseFragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_add_post, container, false)
         setupUI(view)
+        viewModel = getSharedViewModel()
         return view
     }
 
     private fun setupUI(view: View) {
 
-
-        nameTextField = view.findViewById(R.id.etAddPostName)
         saveButton = view.findViewById(R.id.btnAddPostSave)
-        cancelButton = view.findViewById(R.id.btnAddPostCancel)
-        imageField = view.findViewById(R.id.image)
         photoButton = view.findViewById(R.id.btnAddPostSavePhoto)
         descriptionTextField = view.findViewById(R.id.description)
 
         val pickImage = registerForActivityResult(ActivityResultContracts.GetContent()) {
-            // binding.imageField.setImageURI(it)
-            Picasso.get().load(it).resize(1000, 1000).centerInside().into(imageField)
             if (it != null) {
                 uri = it
             }
@@ -76,30 +60,60 @@ class AddPostFragment : BaseFragment() {
         }
 
         saveButton?.setOnClickListener {
-            val name = nameTextField?.text.toString()
+            val name = "Post"
             val des = descriptionTextField?.text.toString()
 
-            // one time get the user
-            getSharedViewModel()
-                .currentUser
-                .observe(viewLifecycleOwner) { user ->
+            viewModel
+                .currentUser.value?.let {
                     val url = uri.toString()
-                    val post = Post(name, user.uri, url, des, false, "")
-                    Model.instance.addPost(post) {
-                        Navigation.findNavController(view)
-                            .navigate(R.id.action_addPostFragment_to_feedFragment)
+                    val post = if (uri != null) {
+                        if (it.uri.trim().isEmpty()) {
+                            Post(
+                                id = "",
+                                name = name,
+                                uri = url,
+                                description = des,
+                                isChecked = false,
+                                postUid = ""
+                            )
+                        } else {
+                            Post(
+                                id = "",
+                                name = name,
+                                uri = url,
+                                userUri = it.uri,
+                                description = des,
+                                isChecked = false,
+                                postUid = ""
+                            )
+                        }
+                    } else {
+                        if (it.uri.trim().isEmpty()) {
+                            Post(
+                                id = "",
+                                name = name,
+                                description = des,
+                                isChecked = false,
+                                postUid = ""
+                            )
+                        } else {
+                            Post(
+                                id = "",
+                                name = name,
+                                userUri = it.uri,
+                                description = des,
+                                isChecked = false,
+                                postUid = ""
+                            )
+                        }
                     }
-                    getSharedViewModel()
-                        .currentUser.removeObservers(viewLifecycleOwner)
+                    viewModel.addPost(post) {
+                        Toast.makeText(requireContext(), "Posted successfully", Toast.LENGTH_LONG)
+                            .show()
+                    }
                 }
 
         }
-    }
-
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        menu.clear()
-        super.onCreateOptionsMenu(menu, inflater)
     }
 
 }

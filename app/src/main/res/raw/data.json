@@ -1,0 +1,354 @@
+{
+  "data": [
+    {
+      "id": "1",
+      "description": "Reduce, reuse, and recycle.",
+      "addedAt": 1646172492000,
+      "dislikes": 0,
+      "lastUpdated": 1646172492000
+    },
+    {
+      "id": "2",
+      "description": "Use energy-efficient appliances and light bulbs.",
+      "addedAt": 1646172492000,
+      "dislikes": 0,
+      "lastUpdated": 1646172492000
+    },
+    {
+      "id": "3",
+      "description": "Turn off lights and appliances when not in use.",
+      "addedAt": 1646172492000,
+      "dislikes": 0,
+      "lastUpdated": 1646172492000
+    },
+    {
+      "id": "4",
+      "description": "Opt for reusable products instead of disposable ones.",
+      "addedAt": 1646172492000,
+      "dislikes": 0,
+      "lastUpdated": 1646172492000
+    },
+    {
+      "id": "5",
+      "description": "Conserve water by fixing leaks and using water-saving fixtures.",
+      "addedAt": 1646172492000,
+      "dislikes": 0,
+      "lastUpdated": 1646172492000
+    },
+    {
+      "id": "6",
+      "description": "Plant trees and native plants to support biodiversity.",
+      "addedAt": 1646172492000,
+      "dislikes": 0,
+      "lastUpdated": 1646172492000
+    },
+    {
+      "id": "7",
+      "description": "Choose eco-friendly transportation options like walking, biking, or public transit.",
+      "addedAt": 1646172492000,
+      "dislikes": 0,
+      "lastUpdated": 1646172492000
+    },
+    {
+      "id": "8",
+      "description": "Use a reusable water bottle and coffee cup.",
+      "addedAt": 1646172492000,
+      "dislikes": 0,
+      "lastUpdated": 1646172492000
+    },
+    {
+      "id": "9",
+      "description": "Minimize plastic usage by opting for alternatives like glass or metal containers.",
+      "addedAt": 1646172492000,
+      "dislikes": 0,
+      "lastUpdated": 1646172492000
+    },
+    {
+      "id": "10",
+      "description": "Support local and sustainable food sources.",
+      "addedAt": 1646172492000,
+      "dislikes": 0,
+      "lastUpdated": 1646172492000
+    },
+    {
+      "id": "11",
+      "description": "Compost organic waste to reduce methane emissions from landfills.",
+      "addedAt": 1646172492000,
+      "dislikes": 0,
+      "lastUpdated": 1646172492000
+    },
+    {
+      "id": "12",
+      "description": "Reduce meat consumption and opt for plant-based meals.",
+      "addedAt": 1646172492000,
+      "dislikes": 0,
+      "lastUpdated": 1646172492000
+    },
+    {
+      "id": "13",
+      "description": "Properly dispose of hazardous waste like batteries and electronics.",
+      "addedAt": 1646172492000,
+      "dislikes": 0,
+      "lastUpdated": 1646172492000
+    },
+    {
+      "id": "14",
+      "description": "Use natural cleaning products to reduce chemical pollution.",
+      "addedAt": 1646172492000,
+      "dislikes": 0,
+      "lastUpdated": 1646172492000
+    },
+    {
+      "id": "15",
+      "description": "Opt for paperless billing and communication.",
+      "addedAt": 1646172492000,
+      "dislikes": 0,
+      "lastUpdated": 1646172492000
+    },
+    {
+      "id": "16",
+      "description": "Properly insulate your home to reduce energy consumption.",
+      "addedAt": 1646172492000,
+      "dislikes": 0,
+      "lastUpdated": 1646172492000
+    },
+    {
+      "id": "17",
+      "description": "Support renewable energy sources like solar and wind power.",
+      "addedAt": 1646172492000,
+      "dislikes": 0,
+      "lastUpdated": 1646172492000
+    },
+    {
+      "id": "18",
+      "description": "Participate in community clean-up efforts.",
+      "addedAt": 1646172492000,
+      "dislikes": 0,
+      "lastUpdated": 1646172492000
+    },
+    {
+      "id": "19",
+      "description": "Avoid products with excessive packaging.",
+      "addedAt": 1646172492000,
+      "dislikes": 0,
+      "lastUpdated": 1646172492000
+    },
+    {
+      "id": "20",
+      "description": "Use public recycling facilities responsibly.",
+      "addedAt": 1646172492000,
+      "dislikes": 0,
+      "lastUpdated": 1646172492000
+    },
+    {
+      "id": "21",
+      "description": "Choose environmentally-friendly modes of travel for vacations.",
+      "addedAt": 1646172492000,
+      "dislikes": 0,
+      "lastUpdated": 1646172492000
+    },
+    {
+      "id": "22",
+      "description": "Advocate for environmental policies and regulations.",
+      "addedAt": 1646172492000,
+      "dislikes": 0,
+      "lastUpdated": 1646172492000
+    },
+    {
+      "id": "23",
+      "description": "Educate yourself and others about environmental issues.",
+      "addedAt": 1646172492000,
+      "dislikes": 0,
+      "lastUpdated": 1646172492000
+    },
+    {
+      "id": "24",
+      "description": "Support businesses that prioritize sustainability.",
+      "addedAt": 1646172492000,
+      "dislikes": 0,
+      "lastUpdated": 1646172492000
+    },
+    {
+      "id": "25",
+      "description": "Volunteer with environmental organizations.",
+      "addedAt": 1646172492000,
+      "dislikes": 0,
+      "lastUpdated": 1646172492000
+    },
+    {
+      "id": "26",
+      "description": "Practice responsible fishing and seafood consumption.",
+      "addedAt": 1646172492000,
+      "dislikes": 0,
+      "lastUpdated": 1646172492000
+    },
+    {
+      "id": "27",
+      "description": "Reduce water usage by taking shorter showers.",
+      "addedAt": 1646172492000,
+      "dislikes": 0,
+      "lastUpdated": 1646172492000
+    },
+    {
+      "id": "28",
+      "description": "Support wildlife conservation efforts.",
+      "addedAt": 1646172492000,
+      "dislikes": 0,
+      "lastUpdated": 1646172492000
+    },
+    {
+      "id": "29",
+      "description": "Dispose of hazardous chemicals properly.",
+      "addedAt": 1646172492000,
+      "dislikes": 0,
+      "lastUpdated": 1646172492000
+    },
+    {
+      "id": "30",
+      "description": "Use rechargeable batteries instead of disposable ones.",
+      "addedAt": 1646172492000,
+      "dislikes": 0,
+      "lastUpdated": 1646172492000
+    },
+    {
+      "id": "31",
+      "description": "Repair or repurpose items instead of discarding them.",
+      "addedAt": 1646172492000,
+      "dislikes": 0,
+      "lastUpdated": 1646172492000
+    },
+    {
+      "id": "32",
+      "description": "Switch to digital subscriptions instead of print media.",
+      "addedAt": 1646172492000,
+      "dislikes": 0,
+      "lastUpdated": 1646172492000
+    },
+    {
+      "id": "33",
+      "description": "Avoid single-use plastics like straws and utensils.",
+      "addedAt": 1646172492000,
+      "dislikes": 0,
+      "lastUpdated": 1646172492000
+    },
+    {
+      "id": "34",
+      "description": "Use energy-efficient modes of transportation like electric vehicles.",
+      "addedAt": 1646172492000,
+      "dislikes": 0,
+      "lastUpdated": 1646172492000
+    },
+    {
+      "id": "35",
+      "description": "Opt for eco-friendly alternatives to traditional pesticides.",
+      "addedAt": 1646172492000,
+      "dislikes": 0,
+      "lastUpdated": 1646172492000
+    },
+    {
+      "id": "36",
+      "description": "Encourage the use of public green spaces.",
+      "addedAt": 1646172492000,
+      "dislikes": 0,
+      "lastUpdated": 1646172492000
+    },
+    {
+      "id": "37",
+      "description": "Dispose of medications properly to prevent water contamination.",
+      "addedAt": 1646172492000,
+      "dislikes": 0,
+      "lastUpdated": 1646172492000
+    },
+    {
+      "id": "38",
+      "description": "Support sustainable forestry practices.",
+      "addedAt": 1646172492000,
+      "dislikes": 0,
+      "lastUpdated": 1646172492000
+    },
+    {
+      "id": "39",
+      "description": "Choose products made from recycled materials.",
+      "addedAt": 1646172492000,
+      "dislikes": 0,
+      "lastUpdated": 1646172492000
+    },
+    {
+      "id": "40",
+      "description": "Reduce food waste by meal planning and proper storage.",
+      "addedAt": 1646172492000,
+      "dislikes": 0,
+      "lastUpdated": 1646172492000
+    },
+    {
+      "id": "41",
+      "description": "Support legislation that protects endangered species.",
+      "addedAt": 1646172492000,
+      "dislikes": 0,
+      "lastUpdated": 1646172492000
+    },
+    {
+      "id": "42",
+      "description": "Practice eco-friendly gardening techniques.",
+      "addedAt": 1646172492000,
+      "dislikes": 0,
+      "lastUpdated": 1646172492000
+    },
+    {
+      "id": "43",
+      "description": "Choose non-toxic and biodegradable household products.",
+      "addedAt": 1646172492000,
+      "dislikes": 0,
+      "lastUpdated": 1646172492000
+    },
+    {
+      "id": "44",
+      "description": "Participate in local environmental initiatives and events.",
+      "addedAt": 1646172492000,
+      "dislikes": 0,
+      "lastUpdated": 1646172492000
+    },
+    {
+      "id": "45",
+      "description": "Reduce car idling to minimize air pollution.",
+      "addedAt": 1646172492000,
+      "dislikes": 0,
+      "lastUpdated": 1646172492000
+    },
+    {
+      "id": "46",
+      "description": "Support initiatives to protect oceans and marine life.",
+      "addedAt": 1646172492000,
+      "dislikes": 0,
+      "lastUpdated": 1646172492000
+    },
+    {
+      "id": "47",
+      "description": "Advocate for the preservation of natural habitats.",
+      "addedAt": 1646172492000,
+      "dislikes": 0,
+      "lastUpdated": 1646172492000
+    },
+    {
+      "id": "48",
+      "description": "Reduce your carbon footprint by carpooling or telecommuting.",
+      "addedAt": 1646172492000,
+      "dislikes": 0,
+      "lastUpdated": 1646172492000
+    },
+    {
+      "id": "49",
+      "description": "Properly maintain vehicles to reduce emissions.",
+      "addedAt": 1646172492000,
+      "dislikes": 0,
+      "lastUpdated": 1646172492000
+    },
+    {
+      "id": "50",
+      "description": "Be mindful of your environmental impact in daily activities and choices.",
+      "addedAt": 1646172492000,
+      "dislikes": 0,
+      "lastUpdated": 1646172492000
+    }
+  ]
+}

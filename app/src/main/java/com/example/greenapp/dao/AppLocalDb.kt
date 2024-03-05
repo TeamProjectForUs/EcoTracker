@@ -8,12 +8,13 @@ import androidx.room.RoomDatabase
 import com.example.greenapp.Model.User
 import com.example.greenapp.base.MyApplication
 import com.example.greenapp.Model.Post
+import com.example.greenapp.Model.Tip
 
 
-@Database(entities = [Post::class], version = 5)
-
+@Database(entities = [Post::class, Tip::class], version = 8)
 abstract class AppLocalDbRepository : RoomDatabase() {
     abstract fun postDao(): PostDao
+    abstract fun tipsDao(): TipsDao
 }
 
 object AppLocalDatabase {
@@ -26,7 +27,7 @@ object AppLocalDatabase {
         Room.databaseBuilder(
             context,
             AppLocalDbRepository::class.java,
-            "dbFileName.db"
+            "greenapp.db"
         )
             .fallbackToDestructiveMigration()
             .build()

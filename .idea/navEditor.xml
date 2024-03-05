@@ -83,6 +83,11 @@
                       <LayoutPositions />
                     </value>
                   </entry>
+                  <entry key="action_global_profileViewFragment">
+                    <value>
+                      <LayoutPositions />
+                    </value>
+                  </entry>
                   <entry key="action_global_startFragment">
                     <value>
                       <LayoutPositions />
@@ -381,6 +386,18 @@
                               </value>
                             </entry>
                           </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="tipsFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="208" />
+                            <option name="y" value="1603" />
+                          </Point>
                         </option>
                       </LayoutPositions>
                     </value>

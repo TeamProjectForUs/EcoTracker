@@ -32,13 +32,24 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+//        Loader().loadAndSaveAllTips(resources)
         sharedViewModel = ViewModelProvider(this)[SharedViewModel::class.java]
         val navHostFragment: NavHostFragment? =
             supportFragmentManager.findFragmentById(R.id.navHostMain) as? NavHostFragment
         navController = navHostFragment?.navController
 
         val menuButton = findViewById<ImageView>(R.id.menuBtn)
+        val backButton = findViewById<ImageView>(R.id.backBtn)
 
+        backButton.setOnClickListener {
+            if (navController?.currentDestination?.id == R.id.feedFragment) {
+                return@setOnClickListener
+            }
+            if (navController?.currentDestination?.id == R.id.profileFragment) {
+                setupNormalMenu()
+            }
+            back()
+        }
         menuButton.setOnClickListener {
             val menu = PopupMenu(this@MainActivity, it)
             when (activityMode) {
@@ -53,6 +64,8 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             menu.setOnMenuItemClickListener(this@MainActivity)
             menu.show()
         }
+
+
     }
 
 
@@ -90,8 +103,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             }
 
             R.id.btnProfileFragment -> {
-                Toast.makeText(this, "Reached", Toast.LENGTH_SHORT).show()
-                navController?.navigate(R.id.action_feedFragment_to_profileFragment)
+                navController?.navigate(R.id.action_global_profile)
                 true
             }
 
@@ -106,6 +118,10 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                 true
             }
 
+            R.id.btn_ecotips -> {
+                navController?.navigate(R.id.action_global_tipsFragment)
+                true
+            }
             /* R.id.btnLogoutProfile -> {
                 Model.instance.signOut()
                 navController?.navigate(R.id.action_global_startFragment)
@@ -130,6 +146,10 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             else -> navController?.let { NavigationUI.onNavDestinationSelected(item, it) }
                 ?: super.onOptionsItemSelected(item)
         }
+    }
+
+    fun back() {
+        navController?.popBackStack()
     }
 
     fun getSharedViewModel(): SharedViewModel {

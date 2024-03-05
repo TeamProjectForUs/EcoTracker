@@ -25,37 +25,33 @@ import com.example.greenapp.Modules.Posts.PostsViewModel
 import com.example.greenapp.databinding.FragmentFeedBinding
 
 
-
 class FeedFragment : BaseMenuFragment() {
 
     private var postsRecyclerView: RecyclerView? = null
     private var adapter: PostsRecyclerAdapter? = null
     private var progressBar: ProgressBar? = null
 
-
     private var _binding: FragmentFeedBinding? = null
     private val binding get() = _binding!!
-    private lateinit var viewModel: PostsViewModel
+    private lateinit var viewModel: SharedViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
 
         _binding = FragmentFeedBinding.inflate(inflater, container, false)
         val view = binding.root
 
-        viewModel = ViewModelProvider(this)[PostsViewModel::class.java]
+        viewModel = getSharedViewModel()
         progressBar = binding.progressBar
 
         progressBar?.visibility = View.VISIBLE
 
-        viewModel.posts= Model.instance.getAllPosts()
-
         postsRecyclerView = binding.rvPostsFragmentList
         postsRecyclerView?.setHasFixedSize(true)
         postsRecyclerView?.layoutManager = LinearLayoutManager(context)
-        adapter = PostsRecyclerAdapter(viewModel.posts?.value)
+        adapter = PostsRecyclerAdapter(viewModel.posts.value)
 
         adapter?.listener = object : PostsRecyclerViewActivity.OnItemClickListener {
 
@@ -63,7 +59,13 @@ class FeedFragment : BaseMenuFragment() {
                 Log.i("TAG", "StudentsRecyclerAdapter: Position clicked $position")
                 val post = viewModel.posts?.value?.get(position)
                 post?.let {
-                    val action= FeedFragmentDirections.actionFeedFragmentToPostFullViewFragment(it.postUid,it.uri,it.name,it.description,it.id)
+                    val action = FeedFragmentDirections.actionFeedFragmentToPostFullViewFragment(
+                        it.postUid,
+                        it.uri,
+                        it.name,
+                        it.description,
+                        it.id
+                    )
                     Navigation.findNavController(view).navigate(action)
                 }
             }
@@ -77,7 +79,8 @@ class FeedFragment : BaseMenuFragment() {
 
         val addPostButton: ImageButton = view.findViewById(R.id.ibtnPostsFragmentAddPost)
 
-        val action = Navigation.createNavigateOnClickListener(R.id.action_feedFragment_to_addPostFragment)
+        val action =
+            Navigation.createNavigateOnClickListener(R.id.action_feedFragment_to_addPostFragment)
         addPostButton.setOnClickListener(action)
 
         viewModel.posts?.observe(viewLifecycleOwner) {
@@ -89,7 +92,7 @@ class FeedFragment : BaseMenuFragment() {
             reloadData()
         }
 
-        Model.instance.postsListLoadingState.observe(viewLifecycleOwner) { state ->
+        viewModel.postsListLoadingState.observe(viewLifecycleOwner) { state ->
             binding.pullToRefresh.isRefreshing = state == Model.LoadingState.LOADING
         }
 
@@ -100,9 +103,10 @@ class FeedFragment : BaseMenuFragment() {
         super.onResume()
         reloadData()
     }
+
     private fun reloadData() {
         progressBar?.visibility = View.VISIBLE
-        Model.instance.refreshAllPosts()
+        viewModel.refreshPosts()
         progressBar?.visibility = View.GONE
     }
 
@@ -111,8 +115,6 @@ class FeedFragment : BaseMenuFragment() {
         super.onDestroy()
         _binding = null
     }
-
-
 
 
 }

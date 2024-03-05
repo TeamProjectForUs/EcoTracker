@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".ProfileViewFragment">
+
+    <TextView
+        android:id="@+id/userNameTv"
+        android:layout_width="wrap_content"
+        android:layout_height="75dp"
+        android:layout_marginTop="110dp"
+        android:text="EcoTips"
+        android:textColor="@color/black"
+        android:textSize="40dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.503"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="0dp"
+        android:layout_height="57dp"
+        android:layout_marginTop="-100dp"
+        android:rotation="175"
+        android:scaleType="fitStart"
+        android:src="@drawable/leaf"
+        app:layout_constraintEnd_toStartOf="@id/userNameTv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/userNameTv" />
+
+    <ImageView
+        android:id="@+id/addPostBtn"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginHorizontal="16dp"
+        android:src="@drawable/img_newpost"
+        app:layout_constraintBottom_toTopOf="@id/buttonsLayout_feed"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <ImageView
+        android:id="@+id/notificationsBtn"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginHorizontal="16dp"
+        android:src="@drawable/icon_notification"
+        app:layout_constraintBottom_toTopOf="@id/buttonsLayout_feed"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="0dp"
+        android:layout_height="57dp"
+        android:layout_marginTop="-50dp"
+        android:rotation="44"
+        android:scaleType="fitStart"
+        android:src="@drawable/leaf"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/userNameTv"
+        app:layout_constraintTop_toBottomOf="@id/userNameTv" />
+
+
+    <LinearLayout
+        android:id="@+id/buttonsLayout_feed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="32dp"
+        android:gravity="center"
+        android:padding="2dp"
+        android:weightSum="2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/userNameTv">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/newTipsBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="32dp"
+            android:layout_weight="1"
+            android:padding="2dp"
+            android:backgroundTint="@color/white"
+            android:text="New tips"
+            android:textAllCaps="false"
+            android:textSize="12sp"
+            app:cornerRadius="100dp"
+            app:strokeColor="@color/black"
+            app:strokeWidth="1dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/allTipsBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_weight="1"
+            android:padding="0dp"
+            android:backgroundTint="@color/strockGreenLight"
+
+            android:text="All tips"
+            android:textAllCaps="false"
+            android:textSize="12dp"
+            app:cornerRadius="100dp"
+            app:strokeColor="@color/black"
+            app:strokeWidth="1dp" />
+
+
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/pullToRefresh"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:indeterminate="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/buttonsLayout_feed">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvTips"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+
+            tools:listitem="@layout/tip_item" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

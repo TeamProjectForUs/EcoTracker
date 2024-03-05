@@ -19,22 +19,23 @@ import com.squareup.picasso.Picasso
 import java.io.File
 import kotlin.io.path.fileVisitor
 
-class PostViewHolder (
-    private val itemView:View,
+class PostViewHolder(
+    private val itemView: View,
     private val listener: PostsRecyclerViewActivity.OnItemClickListener?,
-    var posts:List<Post>?): RecyclerView.ViewHolder(itemView) {
+    var posts: List<Post>?,
+) : RecyclerView.ViewHolder(itemView) {
 
-    private var nameTextView: TextView? = null
-    private var desTextView:TextView?=null
+    private var imageView: ImageView? = null
+    private var desTextView: TextView? = null
     private var postCheckbox: CheckBox? = null
-    private var avatar:ImageView?=null
+    private var avatar: ImageView? = null
     var post: Post? = null
 
     init {
-        nameTextView = itemView.findViewById(R.id.tvPostListRowName)
+        imageView = itemView.findViewById(R.id.tvPostListRowImage)
         postCheckbox = itemView.findViewById(R.id.cbPostListRow)
-        desTextView  = itemView.findViewById(R.id.tvPostListRowDes)
-        avatar=itemView.findViewById(R.id.ivPostListRowAvatar)
+        desTextView = itemView.findViewById(R.id.tvPostListRowDes)
+        avatar = itemView.findViewById(R.id.ivPostListRowAvatar)
 
         postCheckbox?.setOnClickListener {
             val post = posts?.get(adapterPosition)
@@ -51,10 +52,20 @@ class PostViewHolder (
 
     fun bind(post: Post?) {
         this.post = post
-        nameTextView?.text = post?.name
-        desTextView?.text=post?.description
-
         Picasso.get().load(post?.uri?.toUri()).resize(1000, 1000).centerInside().into(avatar)
+
+        desTextView?.text = post?.description
+
+        Picasso.get()
+            .load(post?.uri?.toUri())
+            .resize(1000, 1000)
+            .centerInside()
+            .into(imageView)
+
+        Picasso.get()
+            .load(post?.userUri?.toUri())
+            .resize(1000, 1000)
+            .centerInside().into(avatar)
         // idTextView?.text = post?.id
         postCheckbox?.apply {
             isChecked = post?.isChecked ?: false

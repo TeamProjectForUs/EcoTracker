@@ -82,7 +82,7 @@
     </fragment>
     <fragment
         android:id="@+id/myPostsFragment"
-        android:name="com.example.greenapp.MyPostsFragment"
+        android:name="com.example.greenapp.Modules.Profile.MyPostsFragment"
         android:label="fragment_my_posts"
         tools:layout="@layout/fragment_my_posts">
         <action
@@ -97,7 +97,7 @@
     </fragment>
     <fragment
         android:id="@+id/myGoalsFragment"
-        android:name="com.example.greenapp.MyGoalsFragment"
+        android:name="com.example.greenapp.Modules.Profile.MyGoalsFragment"
         android:label="fragment_my_goals"
         tools:layout="@layout/fragment_my_goals">
         <action
@@ -135,6 +135,7 @@
         android:name="com.example.greenapp.Modules.Posts.PostFullViewFragment"
         android:label="fragment_post_full_view"
         tools:layout="@layout/fragment_post_full_view">
+
         <action
             android:id="@+id/action_postFullViewFragment_to_feedFragment"
             app:destination="@id/feedFragment" />
@@ -156,17 +157,31 @@
         <action
             android:id="@+id/action_postFullViewFragment_to_myPostsFragment"
             app:destination="@id/myPostsFragment" />
+
     </fragment>
     <action
         android:id="@+id/action_global_postFullViewFragment"
         app:destination="@id/postFullViewFragment" />
+
+    <action
+        android:id="@+id/action_global_profile"
+        app:destination="@id/profileFragment" />
+
+    <action
+        android:id="@+id/action_global_tipsFragment"
+        app:destination="@id/tipsFragment" />
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.example.greenapp.ProfileFragment"
+        android:name="com.example.greenapp.Modules.Profile.ProfileFragment"
         android:label="ProfileFragment"
         tools:layout="@layout/fragment_profile">
         <action
             android:id="@+id/action_profileFragment_to_profileViewFragment"
             app:destination="@id/profileViewFragment" />
     </fragment>
+    <fragment
+        tools:layout="@layout/fragment_tips"
+        android:id="@+id/tipsFragment"
+        android:name="com.example.greenapp.Modules.Tips.TipsFragment"
+        android:label="TipsFragment" />
 </navigation>

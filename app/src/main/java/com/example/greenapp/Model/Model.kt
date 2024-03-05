@@ -4,9 +4,14 @@ import android.app.Activity
 import android.os.Looper
 import android.util.Log
 import androidx.core.os.HandlerCompat
+import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.greenapp.dao.AppLocalDatabase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.concurrent.Executors
 
 class Model private constructor() {
@@ -17,13 +22,8 @@ class Model private constructor() {
     }
 
     private val database = AppLocalDatabase.db
-    private var executor = Executors.newSingleThreadExecutor()
-    private var mainHandler = HandlerCompat.createAsync(Looper.getMainLooper())
     private val firebaseModel = FirebaseModel()
-    private val posts: LiveData<MutableList<Post>>? = null
-    private val post: LiveData<MutableList<Post>>? = null
-    val postsListLoadingState: MutableLiveData<LoadingState> = MutableLiveData(LoadingState.LOADED)
-
+    val goalRepository get() = GoalRepository()
 
     fun getFireBaseModel(): FirebaseModel {
         return this.firebaseModel
@@ -33,26 +33,8 @@ class Model private constructor() {
         val instance: Model = Model()
     }
 
-    interface GetAllUsersListener {
-        fun onComplete(users: List<User>)
-    }
-
-    interface GetAllPostsListener {
-        fun onComplete(posts: List<Post>)
-    }
-
     fun getAllUsers(callback: (List<User>) -> Unit) {
         firebaseModel.getAllUsers(callback)
-//        executor.execute {
-//
-//            Thread.sleep(5000)
-//
-//            val Users = database.userDao().getAll()
-//            mainHandler.post {
-//                // Main Thread
-//                callback(Users)
-//            }
-//        }
     }
 
 
@@ -64,14 +46,7 @@ class Model private constructor() {
         activity: Activity,
         callback: (Boolean) -> Unit,
     ) {
-
         firebaseModel.addUser(name, email, password, uri, activity, callback)
-//        executor.execute {
-//            database.userDao().insert(user)
-//            mainHandler.post {
-//                callback()
-//            }
-//        }
     }
 
     fun updateUser(name: String, uri: String, callback: () -> Unit) {
@@ -92,23 +67,99 @@ class Model private constructor() {
         firebaseModel.getUserByName(name, callback)
     }
 
-    fun getAllTips(callback: (List<Tip>?) -> Unit) {
-        firebaseModel.getAllTips(callback)
+    fun getAllTips(
+        tipsLoadingState: MutableLiveData<LoadingState>,
+    ): MutableLiveData<List<Tip>> {
+        val tipsLiveData = MutableLiveData<List<Tip>>()
+        firebaseModel.getAllTips(tipsLoadingState, tipsLiveData)
+        return tipsLiveData
     }
 
-    fun refreshAllTips() {
-
+    fun toggleTipLike(
+        coroutineScope: CoroutineScope,
+        tip: Tip,
+        currentLikeList: MutableList<String>,
+    ) {
+        if (currentLikeList.contains(tip.id)) {
+            coroutineScope.launch {
+                withContext(Dispatchers.IO) {
+                    database.tipsDao().deleteTip(tip)
+                }
+            }
+        } else {
+            coroutineScope.launch {
+                withContext(Dispatchers.IO) {
+                    database.tipsDao().addTip(tip)
+                }
+            }
+        }
+        firebaseModel.toggleTipLike(tip, currentLikeList)
     }
 
 
-    fun getAllPosts(): LiveData<MutableList<Post>> {
-        refreshAllPosts()
-        return posts ?: database.postDao().getAll()
-        //firebaseModel.getAllPosts(callback)
+    fun dislikeTip(
+        tip: Tip,
+        currentDislikeList: MutableList<String>,
+    ) {
+        firebaseModel.dislikeTip(tip, currentDislikeList)
     }
 
-    fun refreshAllPosts() {
-        postsListLoadingState.value = LoadingState.LOADING
+    fun undoDislikeTip(
+        tip: Tip,
+        currentDislikeList: MutableList<String>,
+    ) {
+        firebaseModel.undoDislikeTip(tip, currentDislikeList)
+    }
+
+    fun refreshAllTips(
+        tipsLoadingState: MutableLiveData<LoadingState>,
+        tipsLiveData: MutableLiveData<List<Tip>>,
+    ) {
+        firebaseModel.getAllTips(tipsLoadingState, tipsLiveData)
+    }
+
+    fun myTips(
+        coroutineScope: CoroutineScope,
+        currentLikeList: MutableList<String>,
+        tipsLoadingState: MutableLiveData<LoadingState>,
+    ): LiveData<List<Tip>> {
+        tipsLoadingState.postValue(LoadingState.LOADING)
+        val lastUpdated: Long = Tip.lastUpdated
+        firebaseModel.getMyTips(currentLikeList) {
+            Log.i("TAG", "Firebase returned tips ${it.size}, lastUpdated: $lastUpdated")
+            // 3. Insert new record to ROOM
+            coroutineScope.launch {
+                withContext(Dispatchers.IO) {
+                    var time = lastUpdated
+                    for (tip in it) {
+                        tip.lastUpdated.let { updated ->
+                            if (time < updated)
+                                time = tip.lastUpdated
+                        }
+                    }
+                    database.tipsDao().addTips(it)
+                    // 4. Update local data
+                    Tip.lastUpdated = time
+                    tipsLoadingState.postValue(LoadingState.LOADED)
+                }
+            }
+        }
+        return database.tipsDao().getMyTips()
+    }
+
+    fun getAllPosts(
+        coroutineScope: CoroutineScope,
+        postsLoadingState: MutableLiveData<LoadingState>,
+    ): LiveData<MutableList<Post>> {
+        refreshAllPosts(coroutineScope, postsLoadingState)
+        return database.postDao().getAll()
+    }
+
+    fun refreshAllPosts(
+        coroutineScope: CoroutineScope,
+        postsLoadingState: MutableLiveData<LoadingState>,
+    ) {
+        postsLoadingState.postValue(LoadingState.LOADING)
 
         // 1. Get last local update
         val lastUpdated: Long = Post.lastUpdated
@@ -117,53 +168,82 @@ class Model private constructor() {
         firebaseModel.getAllPosts(lastUpdated) { list ->
             Log.i("TAG", "Firebase returned ${list.size}, lastUpdated: $lastUpdated")
             // 3. Insert new record to ROOM
-            executor.execute {
-                var time = lastUpdated
-                for (post in list) {
-                    database.postDao().insert(post)
+            coroutineScope.launch {
+                withContext(Dispatchers.IO) {
+                    var time = lastUpdated
+                    for (post in list) {
+                        database.postDao().insert(post)
 
-                    post.lastUpdated?.let {
-                        if (time < it)
-                            time = post.lastUpdated ?: System.currentTimeMillis()
+                        post.lastUpdated?.let {
+                            if (time < it)
+                                time = post.lastUpdated ?: System.currentTimeMillis()
+                        }
                     }
+                    // 4. Update local data
+                    Post.lastUpdated = time
+                    postsLoadingState.postValue(LoadingState.LOADED)
                 }
-
-                // 4. Update local data
-                Post.lastUpdated = time
-                postsListLoadingState.postValue(LoadingState.LOADED)
             }
         }
 
     }
+
 
     fun updatePost(
         postUid: String,
         name: String,
         description: String,
         uri: String,
+        coroutineScope: CoroutineScope,
+        postsLoadingState: MutableLiveData<LoadingState>,
         callback: () -> Unit,
     ) {
         firebaseModel.updatePost(postUid, name, description, uri) {
-            refreshAllPosts()
+            refreshAllPosts(coroutineScope, postsLoadingState)
             callback()
         }
 
     }
 
-    fun getMyPosts(callback: (List<Post>?) -> Unit) {
-        firebaseModel.getMyPosts(callback)
+    fun getMyPosts(
+        loadingState: MutableLiveData<LoadingState>,
+    ): MutableLiveData<List<Post>> {
+        val liveData = MutableLiveData<List<Post>>()
+        firebaseModel.getMyPosts(liveData, loadingState)
+        return liveData
     }
 
-    fun addPost(post: Post, callback: () -> Unit) {
+    fun addMyTip(tip: Tip) {
+        firebaseModel.addMyTip(tip)
+        database.tipsDao().addTip(tip)
+    }
+
+    suspend fun removeMyTip(tip: Tip) {
+        firebaseModel.removeMyTip(tip)
+        database.tipsDao().deleteTip(tip)
+    }
+
+    fun addPost(
+        post: Post,
+        coroutineScope: CoroutineScope,
+        postsLoadingState: MutableLiveData<LoadingState>,
+        callback: () -> Unit,
+    ) {
         firebaseModel.addPost(post) {
-            refreshAllPosts()
+            refreshAllPosts(coroutineScope, postsLoadingState)
             callback()
         }
     }
 
     fun getPostById(postUid: String): LiveData<MutableList<Post>> {
-        return post ?: database.postDao().getPostById(postUid)
+        return database.postDao().getPostById(postUid)
     }
 
+    fun toggleGoalTip(
+        userGoalsList: MutableList<Goal>,
+        tip: Tip,
+    ) {
+        firebaseModel.toggleGoalTip(tip, userGoalsList)
+    }
 
 }

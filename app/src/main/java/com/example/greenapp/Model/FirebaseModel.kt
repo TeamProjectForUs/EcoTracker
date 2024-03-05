@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.ContentValues.TAG
 import android.util.Log
 import androidx.core.net.toUri
+import androidx.lifecycle.MutableLiveData
 import com.google.firebase.Timestamp
 
 import com.google.firebase.auth.FirebaseAuth
@@ -11,6 +12,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.firestoreSettings
@@ -22,6 +24,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
 import com.squareup.picasso.Picasso
+import kotlinx.coroutines.CoroutineScope
 import java.lang.Exception
 import java.util.UUID
 
@@ -38,33 +41,64 @@ class FirebaseModel {
         const val TIPS_COLLECTION_PATH = "tips"
     }
 
+    fun getDB(): FirebaseFirestore {
+        return db
+    }
+
+    fun getAuth(): FirebaseAuth {
+        return auth
+    }
+
     init {
         val settings = firestoreSettings {
             setLocalCacheSettings(memoryCacheSettings { })
         }
         db.firestoreSettings = settings
         auth = Firebase.auth
-        // dbimage= FirebaseStorage.getInstance()
         dbimage = FirebaseStorage.getInstance().getReference("images")
         firebaseref = FirebaseDatabase.getInstance().getReference("posts")
 
     }
 
-    fun getAllTips(callback: (List<Tip>) -> Unit) {
-        db.collection(TIPS_COLLECTION_PATH).get().addOnCompleteListener {
-            when (it.isSuccessful) {
-                true -> {
-                    val tips: MutableList<Tip> = mutableListOf()
-                    for (json in it.result) {
-                        val tip = Tip.fromJSON(json.data)
+    fun getMyTips(
+        currentLikeList: MutableList<String>,
+        callback: (List<Tip>) -> Unit,
+    ) {
+        db.collection(TIPS_COLLECTION_PATH)
+            .get()
+            .addOnSuccessListener {
+                val tips: MutableList<Tip> = mutableListOf()
+                for (doc in it.documents) {
+                    doc.data?.let {
+                        val tip = Tip.fromJSON(it)
                         tips.add(tip)
                     }
-                    callback(tips)
                 }
-
-                false -> callback(listOf())
+                callback(tips.filter { tip -> currentLikeList.contains(tip.id) })
             }
-        }
+    }
+
+    fun getAllTips(
+        tipsLoadingState: MutableLiveData<Model.LoadingState>,
+        tipsLiveData: MutableLiveData<List<Tip>>,
+    ) {
+        db.collection(TIPS_COLLECTION_PATH)
+            .get()
+            .addOnCompleteListener {
+                when (it.isSuccessful) {
+                    true -> {
+                        val tips: MutableList<Tip> = mutableListOf()
+                        for (json in it.result) {
+                            val tip = Tip.fromJSON(json.data)
+                            tips.add(tip)
+                        }
+                        tipsLiveData.postValue(tips)
+                    }
+
+                    false -> tipsLiveData.postValue(listOf())
+                }
+                tipsLoadingState.postValue(Model.LoadingState.LOADED)
+            }
     }
 
 
@@ -114,19 +148,21 @@ class FirebaseModel {
 
         if (user != null) {
 
-            dbimage.child(user.uid).putFile(uri.toUri()).addOnSuccessListener { task ->
-                task.metadata!!.reference!!.downloadUrl.addOnSuccessListener {
-                    db.collection(USERS_COLLECTION_PATH).document(user.uid).set(
-                        mapOf(
-                            "name" to name,
-                            "uri" to it,
-                            "lastUpdated" to FieldValue.serverTimestamp()
-                        ), SetOptions.merge()
-                    ).addOnCompleteListener {
-                        callback()
+            dbimage.child(user.uid)
+                .putFile(uri.toUri())
+                .addOnSuccessListener { task ->
+                    task.metadata!!.reference!!.downloadUrl.addOnSuccessListener {
+                        db.collection(USERS_COLLECTION_PATH).document(user.uid).set(
+                            mapOf(
+                                "name" to name,
+                                "uri" to it,
+                                "lastUpdated" to FieldValue.serverTimestamp()
+                            ), SetOptions.merge()
+                        ).addOnCompleteListener {
+                            callback()
+                        }
                     }
                 }
-            }
         }
     }
 
@@ -145,7 +181,7 @@ class FirebaseModel {
                     if (auth.currentUser != null) {
                         id = auth.currentUser!!.uid
                     }
-                    val user = User(name, id, email, password, uri, false)
+                    val user = User(name, id, email, password, uri, isChecked = false)
 
                     db.collection(USERS_COLLECTION_PATH)
                         .document(user.id)
@@ -153,6 +189,8 @@ class FirebaseModel {
                         .addOnSuccessListener {
                             callback(true)
                         }
+
+
                 } else {
                     callback(false)
                 }
@@ -193,7 +231,6 @@ class FirebaseModel {
                     false -> callback(listOf())
                 }
             }
-
     }
 
     fun updatePost(
@@ -215,24 +252,38 @@ class FirebaseModel {
     }
 
     fun addPost(post: Post, callback: () -> Unit) {
-
-        val postUid = UUID.randomUUID()
         // post.postUid= postUid.toString()
         post.postUid = firebaseref.push().key!!
-        dbimage.child(post.postUid).putFile(post.uri.toUri()).addOnSuccessListener { task ->
-            task.metadata!!.reference!!.downloadUrl.addOnSuccessListener {
-                post.uri = it.toString()
-                db.collection(POSTS_COLLECTION_PATH).document(post.postUid).set(post.json)
-                    .addOnSuccessListener {
-                        callback()
-                    }
-            }
+
+        if (post.isDefaultImage()) {
+            db.collection(POSTS_COLLECTION_PATH)
+                .document(post.postUid).set(post.json)
+                .addOnSuccessListener {
+                    callback()
+                }.addOnFailureListener { e -> e.printStackTrace() }
+        } else {
+            dbimage.child(post.postUid)
+                .putFile(post.uri.toUri())
+                .addOnSuccessListener { task ->
+                    task.metadata!!.reference!!.downloadUrl
+                        .addOnSuccessListener {
+                            post.uri = it.toString()
+                            db.collection(POSTS_COLLECTION_PATH)
+                                .document(post.postUid).set(post.json)
+                                .addOnSuccessListener {
+                                    callback()
+                                }.addOnFailureListener { e -> e.printStackTrace() }
+                        }
+                }.addOnFailureListener { e -> e.printStackTrace() }
         }
 
     }
 
 
-    fun getMyPosts(callback: (List<Post>?) -> Unit) {
+    fun getMyPosts(
+        liveData: MutableLiveData<List<Post>>,
+        loadingState: MutableLiveData<Model.LoadingState>,
+    ) {
         // Build a query to filter posts by username
 
         val query = db.collection(POSTS_COLLECTION_PATH)
@@ -246,10 +297,14 @@ class FirebaseModel {
                         val post = Post.fromJSON(json.data)
                         posts.add(post)
                     }
-                    callback(posts)
+                    loadingState.postValue(Model.LoadingState.LOADED)
+                    liveData.postValue(posts)
                 }
 
-                false -> callback(listOf())
+                false -> {
+                    liveData.postValue(listOf())
+                    loadingState.postValue(Model.LoadingState.LOADED)
+                }
             }
         }
     }
@@ -273,6 +328,91 @@ class FirebaseModel {
                 false -> callback(listOf())
             }
         }
+    }
+
+    fun addMyTip(tip: Tip) {
+        val userId: String = auth.currentUser!!.uid
+
+        db.collection(USERS_COLLECTION_PATH)
+            .document(userId)
+            .collection("favorite_tips")
+            .add(tip)
+
+    }
+
+    fun removeMyTip(tip: Tip) {
+        val userId: String = auth.currentUser!!.uid
+
+        db.collection(USERS_COLLECTION_PATH)
+            .document(userId)
+            .collection("favorite_tips")
+            .document(tip.id)
+            .delete()
+
+    }
+
+    fun dislikeTip(
+        tip: Tip,
+        currentDislikeList: MutableList<String>,
+    ) {
+        val userId: String = auth.currentUser!!.uid
+
+        currentDislikeList.add(tip.id)
+        db.collection(USERS_COLLECTION_PATH)
+            .document(userId)
+            .update(User.DISLIKE_LIST, currentDislikeList)
+
+        db.collection(TIPS_COLLECTION_PATH)
+            .document(tip.id)
+            .update(Tip.DISLIKES, tip.dislikes + 1)
+
+    }
+
+    fun toggleTipLike(
+        tip: Tip,
+        currentLikeList: MutableList<String>,
+    ) {
+        val userId: String = auth.currentUser!!.uid
+        if (currentLikeList.contains(tip.id)) {
+            currentLikeList.remove(tip.id)
+        } else {
+            currentLikeList.add(tip.id)
+        }
+
+        db.collection(USERS_COLLECTION_PATH)
+            .document(userId)
+            .update(UserModelFirebase.LIKE_KEY, currentLikeList)
+    }
+
+    fun undoDislikeTip(
+        tip: Tip,
+        currentDislikeList: MutableList<String>,
+    ) {
+        val userId: String = auth.currentUser!!.uid
+        currentDislikeList.remove(tip.id)
+        db.collection(USERS_COLLECTION_PATH)
+            .document(userId)
+            .update(User.DISLIKE_LIST, currentDislikeList)
+
+
+        db.collection(TIPS_COLLECTION_PATH)
+            .document(tip.id)
+            .update(Tip.DISLIKES, tip.dislikes - 1)
+
+    }
+
+    fun toggleGoalTip(tip: Tip, userGoalsList: MutableList<Goal>) {
+        val userId: String = auth.currentUser!!.uid
+
+        if (userGoalsList.find { goal -> goal.tip.id == tip.id } != null) {
+            userGoalsList.removeIf { goal -> goal.tip.id == tip.id }
+        } else {
+            userGoalsList.add(Goal(tip, false))
+        }
+
+        db.collection(USERS_COLLECTION_PATH)
+            .document(userId)
+            .update(UserModelFirebase.GOALS_KEY, userGoalsList)
     }
 
 

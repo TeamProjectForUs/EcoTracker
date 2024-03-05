@@ -1,78 +1,80 @@
 package com.example.greenapp
 
-import android.app.Dialog
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.greenapp.Model.Model
-import com.example.greenapp.Model.Tip
+import com.example.greenapp.Modules.Profile.ProfileViewModel
+import com.example.greenapp.Modules.Tips.createTipsAdapter
+import com.example.greenapp.adapters.TipsAdapter
+import com.example.greenapp.databinding.FragmentMyTipsBinding
 
 
-class MyTipsFragment : Fragment() {
+class MyTipsFragment : BaseMenuProfileFragment() {
 
-    private var yesbtn: Button? = null
-    private var messageTextView: TextView? = null
+    private var _binding: FragmentMyTipsBinding? = null
+    private val binding: FragmentMyTipsBinding get() = _binding!!
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
+
+    private lateinit var profileViewModel: ProfileViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
-        // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_my_tips, container, false)
-        setupUI(view)
-        return view
+    ): View {
+
+        _binding = FragmentMyTipsBinding.inflate(inflater)
+        return binding.root
     }
 
-    fun setupUI(view: View) {
-        Model.instance.getAllTips {
-            var tip: Tip? = it?.get(0)
 
-            if (tip != null) {
-                TipAlert(tip)
+    private lateinit var adapter: TipsAdapter
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        profileViewModel = ViewModelProvider(requireParentFragment())[ProfileViewModel::class.java]
+        val sharedVm = getSharedViewModel()
+
+        adapter =
+            createTipsAdapter(
+                TipsAdapter.TipAdapterData.AllTips(listOf()),
+                profileViewModel,
+                isLikedPage = true,
+                onMakeGoal = { tip, position ->
+                    sharedVm.currentUser.value?.let { user ->
+                        profileViewModel.toggleGoalTip(user.goals, tip)
+                        adapter.updateUserGoalList(user.goals, position)
+                    }
+                }
+            )
+
+
+        binding.rvTips.adapter = adapter
+        binding.rvTips.layoutManager = LinearLayoutManager(requireContext())
+
+        sharedVm.currentUser.value?.let { user ->
+            profileViewModel.startListeningMyTips(user.currentLikeList)
+            profileViewModel.myTips.observe(viewLifecycleOwner) { likedTips ->
+                adapter.setTipsData(TipsAdapter.TipAdapterData.AllTips(likedTips))
             }
         }
-    }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        menu.clear()
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-
-    fun TipAlert(tip: Tip) {
-        messageTextView = view?.findViewById(R.id.alertMessage)
-        messageTextView?.setText(tip.description)
-        val dilaogBinding = layoutInflater.inflate(R.layout.fragment_tip_alert, null)
-
-        Toast.makeText(context, " ${tip.description}", Toast.LENGTH_SHORT).show()
-
-        val myDialog = Dialog(requireActivity())
-        myDialog.setContentView(dilaogBinding)
-
-        myDialog.setCancelable(true)
-        myDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        myDialog.show()
-
-        yesbtn = dilaogBinding.findViewById(R.id.alertYes)
-        yesbtn?.setOnClickListener {
-            myDialog.dismiss()
+        binding.progressBar.visibility = VISIBLE
+        profileViewModel.myTipsLoadingState.observe(viewLifecycleOwner) { state ->
+            binding.progressBar.visibility = GONE
         }
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
+
 
 }

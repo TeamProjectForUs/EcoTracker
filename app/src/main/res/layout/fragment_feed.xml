@@ -46,7 +46,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/buttonsLayout_feed"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -63,9 +63,38 @@
             android:text="Feed"
             android:textAllCaps="false"
             app:cornerRadius="100dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:strokeColor="@color/black"
             app:strokeWidth="1dp" />
-    </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+
+            <ImageView
+                android:id="@+id/notifications_feedBtn"
+                android:layout_width="25dp"
+
+                android:layout_height="25dp"
+                android:src="@drawable/icon_notification" />
+
+            <ImageView
+                android:id="@+id/add_post_feedBtn"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/img_newpost" />
+
+        </LinearLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/pullToRefresh"
