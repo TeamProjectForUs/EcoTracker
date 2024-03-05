@@ -10,7 +10,6 @@
     <ImageView
         android:id="@+id/btnAddPostSavePhoto"
         android:layout_width="wrap_content"
-
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
@@ -32,7 +31,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="8dp"
-        android:text="Write your new post"
+        android:text="write your new post:"
+        android:textColor="@color/black"
         android:textAlignment="center"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@id/postLayout" />
@@ -64,17 +64,18 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnAddPostSave"
-            android:layout_width="wrap_content"
+            android:layout_width="67dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
             android:layout_marginTop="15dp"
             android:layout_marginEnd="15dp"
             android:layout_marginBottom="15dp"
             android:backgroundTint="@color/white"
+            android:paddingHorizontal="1dp"
             android:paddingVertical="8dp"
             android:text="Post"
-            android:paddingHorizontal="32dp"
-            android:textSize="25dp"
+            android:textAllCaps="false"
+            android:textSize="14dp"
             app:cornerRadius="100dp"
             app:strokeColor="@color/black"
             app:strokeWidth="1dp" />
