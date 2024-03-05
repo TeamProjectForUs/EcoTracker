@@ -4,6 +4,8 @@
     <color name="white">#FFFFFFFF</color>
     <color name="strockGreen">#125310</color>
     <color name="strockGreenLight">#D0E3D8</color>
+    <color name="lightGray">#FFE2E6E4</color>
+
     <!-- Selected button color -->
     <color name="selected_button_color">@color/strockGreen</color>
 
