@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.greenapp.Model.User.Companion.IMAGE_DEFAULT
 import com.example.greenapp.base.MyApplication
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
@@ -12,17 +13,18 @@ import java.util.UUID
 @Entity
 data class Post(
     val name: String,
-    val id: String,
-    var userUri: String = "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg",
-    var uri: String = "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg",
+    var userUri: String = IMAGE_DEFAULT,
+    var uri: String = IMAGE_DEFAULT,
     val description: String,
+    val userId: String,
+    val datePosted: Long = System.currentTimeMillis(),
     var isChecked: Boolean,
     @PrimaryKey var postUid: String,
     var lastUpdated: Long? = null,
 ) {
 
     fun isDefaultImage(): Boolean {
-        return uri == "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg"
+        return uri == IMAGE_DEFAULT
     }
 
     companion object {
@@ -42,11 +44,13 @@ data class Post(
 
 
         const val NAME_KEY = "name"
-        const val ID_KEY = "id"
+        const val USERID_KEY = "userId"
         const val URI_KEY = "uri"
         const val DESCRIPTION_KEY = "description"
         const val IS_CHECKED_KEY = "isChecked"
         const val POSTUID_KEY = "postUid"
+        const val DATE_POSTED = "datePosted"
+
         const val USER_URI_KEY = "userUri"
 
         const val LAST_UPDATED = "lastUpdated"
@@ -54,14 +58,24 @@ data class Post(
 
         fun fromJSON(json: Map<String, Any>): Post {
             val name = json[NAME_KEY] as? String ?: ""
-            val id = json[ID_KEY] as? String ?: ""
+            val userId = json[USERID_KEY] as? String ?: ""
             val uri = json[URI_KEY] as? String ?: ""
             val des = json[DESCRIPTION_KEY] as? String ?: ""
             val isChecked = json[IS_CHECKED_KEY] as? Boolean ?: false
             val postUid = json[POSTUID_KEY] as? String ?: ""
             val userUri = json[USER_URI_KEY] as? String ?: ""
+            val datePosted = json[DATE_POSTED] as? Long ?: 0
 
-            val post = Post(name, id, userUri = userUri, uri, des, isChecked, postUid)
+            val post = Post(
+                name = name,
+                userId = userId,
+                userUri = userUri,
+                uri = uri,
+                description = des,
+                isChecked = isChecked,
+                postUid = postUid,
+                datePosted = datePosted
+            )
             val timestamp: Timestamp? = json[LAST_UPDATED] as? Timestamp
             timestamp?.let {
                 post.lastUpdated = it.seconds
@@ -74,7 +88,8 @@ data class Post(
         get() {
             return hashMapOf(
                 NAME_KEY to name,
-                ID_KEY to id,
+                USERID_KEY to userId,
+                DATE_POSTED to datePosted,
                 URI_KEY to uri,
                 USER_URI_KEY to userUri,
                 DESCRIPTION_KEY to description,

@@ -1,8 +1,9 @@
 package com.example.greenapp.Modules.Profile
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,13 +12,16 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.greenapp.BaseFragment
+import com.example.greenapp.FeedFragment
 import com.example.greenapp.Model.Post
 import com.example.greenapp.Modules.Posts.Adapter.PostsRecyclerAdapter
-import com.example.greenapp.Modules.Posts.PostsRecyclerViewActivity
+import com.example.greenapp.R
 import com.example.greenapp.databinding.FragmentMyPostsBinding
+import com.google.android.material.button.MaterialButton
 
 
-class MyPostsFragment : Fragment() {
+class MyPostsFragment : BaseFragment() {
 
 
     private lateinit var profileViewModel: ProfileViewModel
@@ -43,14 +47,14 @@ class MyPostsFragment : Fragment() {
             progressBar.visibility = View.GONE
         }
 
+        val sharedVm = getSharedViewModel()
         postsRecyclerView.setHasFixedSize(true)
         postsRecyclerView.layoutManager = LinearLayoutManager(context)
-        adapter = PostsRecyclerAdapter(listOf())
-
-        adapter.listener = object : PostsRecyclerViewActivity.OnItemClickListener {
+        adapter = PostsRecyclerAdapter(listOf(), onProfile = true)
+        val userId = sharedVm.currentUser.value?.id ?: ""
+        adapter.listener = object : FeedFragment.OnItemClickListener {
 
             override fun onItemClick(position: Int) {
-                Log.i("TAG", "PostsRecyclerAdapter: Position clicked $position")
                 val post = posts[position]
                 post.let {
                     val action =
@@ -59,14 +63,28 @@ class MyPostsFragment : Fragment() {
                             it.uri,
                             it.name,
                             it.description,
-                            it.id
+                            userId,
                         )
                     Navigation.findNavController(view).navigate(action)
                 }
             }
 
-            override fun onStudentClicked(post: Post?) {
-                Log.i("TAG", "POST $post")
+            override fun onItemClickRemove(position: Int) {
+                val post = posts[position]
+                val layout = layoutInflater.inflate(R.layout.confirmation_layout, null, false)
+                val dialog = AlertDialog.Builder(requireContext())
+                    .setView(layout)
+                    .create()
+                val okBtn = layout.findViewById<MaterialButton>(R.id.deleteBtnYes)
+                val cancelBtn = layout.findViewById<MaterialButton>(R.id.deleteBtnNo)
+
+                okBtn.setOnClickListener {
+                    profileViewModel.removeMyPost(post)
+                    dialog.dismiss()
+                }
+                cancelBtn.setOnClickListener { dialog.dismiss() }
+                dialog.show()
+
             }
         }
 
@@ -81,6 +99,7 @@ class MyPostsFragment : Fragment() {
         _binding = FragmentMyPostsBinding.inflate(inflater, container, false)
         return binding.root
     }
+
     override fun onDestroy() {
         super.onDestroy()
         _binding = null

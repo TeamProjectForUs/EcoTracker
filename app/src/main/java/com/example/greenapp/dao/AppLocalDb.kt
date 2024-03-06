@@ -11,7 +11,7 @@ import com.example.greenapp.Model.Post
 import com.example.greenapp.Model.Tip
 
 
-@Database(entities = [Post::class, Tip::class], version = 8)
+@Database(entities = [Post::class, Tip::class], version = 9)
 abstract class AppLocalDbRepository : RoomDatabase() {
     abstract fun postDao(): PostDao
     abstract fun tipsDao(): TipsDao
@@ -27,7 +27,7 @@ object AppLocalDatabase {
         Room.databaseBuilder(
             context,
             AppLocalDbRepository::class.java,
-            "greenapp.db"
+            "ecotracker.db"
         )
             .fallbackToDestructiveMigration()
             .build()

@@ -11,6 +11,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.Query
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
@@ -19,10 +20,12 @@ import com.google.firebase.firestore.firestoreSettings
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.memoryCacheSettings
 import com.google.firebase.firestore.persistentCacheSettings
+import com.google.firebase.firestore.toObject
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
+import com.google.gson.Gson
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.CoroutineScope
 import java.lang.Exception
@@ -102,21 +105,21 @@ class FirebaseModel {
     }
 
 
-    fun getAllUsers(callback: (List<User>) -> Unit) {
-        db.collection(USERS_COLLECTION_PATH).get().addOnCompleteListener {
-            when (it.isSuccessful) {
-                true -> {
-                    val users: MutableList<User> = mutableListOf()
-                    for (json in it.result) {
-                        val user = User.fromJSON(json.data)
-                        users.add(user)
+    fun getAllUsers(callback: (List<UserModelFirebase>) -> Unit) {
+        db.collection(USERS_COLLECTION_PATH)
+            .get()
+            .addOnCompleteListener {
+                when (it.isSuccessful) {
+                    true -> {
+                        val users: MutableList<UserModelFirebase> = mutableListOf()
+                        for (document in it.result)
+                            users.add(document.toObject(UserModelFirebase::class.java))
+                        callback(users)
                     }
-                    callback(users)
-                }
 
-                false -> callback(listOf())
+                    false -> callback(listOf())
+                }
             }
-        }
     }
 
     fun addUserListener(
@@ -182,14 +185,14 @@ class FirebaseModel {
                         id = auth.currentUser!!.uid
                     }
                     val user = User(name, id, email, password, uri, isChecked = false)
-
+                    val toSave = user.json.toMutableMap()
+                    toSave.remove(User.PASSWORD_KEY)
                     db.collection(USERS_COLLECTION_PATH)
                         .document(user.id)
                         .set(user.json)
                         .addOnSuccessListener {
                             callback(true)
                         }
-
 
                 } else {
                     callback(false)
@@ -217,7 +220,12 @@ class FirebaseModel {
 
     fun getAllPosts(since: Long, callback: (List<Post>) -> Unit) {
         db.collection(POSTS_COLLECTION_PATH)
-            .whereGreaterThan(Post.LAST_UPDATED, Timestamp(since, 0)).get().addOnCompleteListener {
+            .orderBy(
+                Post.DATE_POSTED,
+                com.google.firebase.firestore.Query.Direction.DESCENDING
+            )
+            .get()
+            .addOnCompleteListener {
                 when (it.isSuccessful) {
                     true -> {
                         val posts: MutableList<Post> = mutableListOf()
@@ -235,18 +243,15 @@ class FirebaseModel {
 
     fun updatePost(
         postUid: String,
-        name: String,
         description: String,
         uri: String,
         callback: () -> Unit,
     ) {
         db.collection(POSTS_COLLECTION_PATH).document(postUid).set(
             mapOf(
-                "name" to name,
                 "description" to description,
                 "uri" to uri,
                 "lastUpdated" to FieldValue.serverTimestamp()
-
             ), SetOptions.merge()
         ).addOnCompleteListener { callback() }
     }
@@ -280,6 +285,16 @@ class FirebaseModel {
     }
 
 
+    fun removePost(post: Post, callback: () -> Unit) {
+        db.collection(POSTS_COLLECTION_PATH)
+            .document(post.postUid)
+            .delete()
+            .addOnCompleteListener {
+                callback()
+            }
+    }
+
+
     fun getMyPosts(
         liveData: MutableLiveData<List<Post>>,
         loadingState: MutableLiveData<Model.LoadingState>,
@@ -287,9 +302,11 @@ class FirebaseModel {
         // Build a query to filter posts by username
 
         val query = db.collection(POSTS_COLLECTION_PATH)
-            .whereEqualTo("id", auth.currentUser?.uid)
+            .whereEqualTo(Post.USERID_KEY, auth.currentUser?.uid)
+            .orderBy(Post.DATE_POSTED, com.google.firebase.firestore.Query.Direction.DESCENDING)
 
         query.get().addOnCompleteListener {
+
             when (it.isSuccessful) {
                 true -> {
                     val posts: MutableList<Post> = mutableListOf()
@@ -399,6 +416,23 @@ class FirebaseModel {
             .document(tip.id)
             .update(Tip.DISLIKES, tip.dislikes - 1)
 
+    }
+
+
+    fun toggleFriend(
+        someOtherUser: UserModelFirebase,
+        userFriendList: MutableList<String>,
+    ) {
+        val userId: String = auth.currentUser!!.uid
+        if (userFriendList.find { friendId -> friendId == someOtherUser.id } != null) {
+            userFriendList.removeIf { friendId -> friendId == someOtherUser.id }
+        } else {
+            userFriendList.add(someOtherUser.id)
+        }
+
+        db.collection(USERS_COLLECTION_PATH)
+            .document(userId)
+            .update(UserModelFirebase.FRIENDS_KEY, userFriendList)
     }
 
     fun toggleGoalTip(tip: Tip, userGoalsList: MutableList<Goal>) {

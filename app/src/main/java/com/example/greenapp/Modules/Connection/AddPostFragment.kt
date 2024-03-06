@@ -11,7 +11,9 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import com.example.greenapp.BaseFragment
+import com.example.greenapp.MainActivity
 import com.example.greenapp.R
 import com.example.greenapp.Model.Post
 import com.example.greenapp.SharedViewModel
@@ -66,31 +68,32 @@ class AddPostFragment : BaseFragment() {
             viewModel
                 .currentUser.value?.let {
                     val url = uri.toString()
+                    val userId = it.id
                     val post = if (uri != null) {
                         if (it.uri.trim().isEmpty()) {
                             Post(
-                                id = "",
+                                userId = userId,
                                 name = name,
                                 uri = url,
                                 description = des,
                                 isChecked = false,
-                                postUid = ""
+                                postUid = "",
                             )
                         } else {
                             Post(
-                                id = "",
+                                userId = userId,
                                 name = name,
                                 uri = url,
                                 userUri = it.uri,
                                 description = des,
                                 isChecked = false,
-                                postUid = ""
+                                postUid = "",
                             )
                         }
                     } else {
                         if (it.uri.trim().isEmpty()) {
                             Post(
-                                id = "",
+                                userId = userId,
                                 name = name,
                                 description = des,
                                 isChecked = false,
@@ -98,7 +101,7 @@ class AddPostFragment : BaseFragment() {
                             )
                         } else {
                             Post(
-                                id = "",
+                                userId = userId,
                                 name = name,
                                 userUri = it.uri,
                                 description = des,
@@ -108,6 +111,8 @@ class AddPostFragment : BaseFragment() {
                         }
                     }
                     viewModel.addPost(post) {
+                        findNavController().popBackStack()
+                        (activity as MainActivity).setupNormalMenu()
                         Toast.makeText(requireContext(), "Posted successfully", Toast.LENGTH_LONG)
                             .show()
                     }

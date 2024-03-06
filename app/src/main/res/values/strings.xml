@@ -8,4 +8,9 @@
     <string name="sign_out">Sign out</string>
     <string name="edit">Edit</string>
     <string name="make_this_tip_a_goal">Make this tip a goal</string>
+    <string name="usersearch">Explore users</string>
+    <string name="not_following">You are not following this user</string>
+    <string name="unfollow">Unfollow</string>
+    <string name="follow">Follow</string>
+    <string name="following">You are following this user</string>
 </resources>

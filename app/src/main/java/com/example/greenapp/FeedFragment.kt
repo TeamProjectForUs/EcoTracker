@@ -1,31 +1,29 @@
 package com.example.greenapp
 
-import android.app.Dialog
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.ProgressBar
-import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.greenapp.Model.Model
 import com.example.greenapp.Model.Post
 import com.example.greenapp.Modules.Posts.Adapter.PostsRecyclerAdapter
-import com.example.greenapp.Modules.Posts.PostsRecyclerViewActivity
-import com.example.greenapp.Modules.Posts.PostsViewModel
 import com.example.greenapp.databinding.FragmentFeedBinding
 
 
 class FeedFragment : BaseMenuFragment() {
+
+    interface OnItemClickListener {
+        fun onItemClick(position: Int)
+        fun onItemClickRemove(position: Int)
+    }
 
     private var postsRecyclerView: RecyclerView? = null
     private var adapter: PostsRecyclerAdapter? = null
@@ -51,39 +49,37 @@ class FeedFragment : BaseMenuFragment() {
         postsRecyclerView = binding.rvPostsFragmentList
         postsRecyclerView?.setHasFixedSize(true)
         postsRecyclerView?.layoutManager = LinearLayoutManager(context)
-        adapter = PostsRecyclerAdapter(viewModel.posts.value)
-
-        adapter?.listener = object : PostsRecyclerViewActivity.OnItemClickListener {
-
+        adapter = PostsRecyclerAdapter(viewModel.posts.value ?: listOf())
+        val userId = viewModel.currentUser.value?.id ?: ""
+        adapter?.listener = object : OnItemClickListener {
             override fun onItemClick(position: Int) {
-                Log.i("TAG", "StudentsRecyclerAdapter: Position clicked $position")
-                val post = viewModel.posts?.value?.get(position)
+                val post = viewModel.posts.value?.get(position)
                 post?.let {
                     val action = FeedFragmentDirections.actionFeedFragmentToPostFullViewFragment(
                         it.postUid,
                         it.uri,
                         it.name,
                         it.description,
-                        it.id
+                        userId
                     )
                     Navigation.findNavController(view).navigate(action)
                 }
             }
 
-            override fun onStudentClicked(post: Post?) {
-                Log.i("TAG", "POST $post")
+            override fun onItemClickRemove(position: Int) {
             }
+
         }
 
         postsRecyclerView?.adapter = adapter
 
-        val addPostButton: ImageButton = view.findViewById(R.id.ibtnPostsFragmentAddPost)
+        val addPostButton: ImageView = view.findViewById(R.id.add_post_feedBtn)
 
         val action =
             Navigation.createNavigateOnClickListener(R.id.action_feedFragment_to_addPostFragment)
         addPostButton.setOnClickListener(action)
 
-        viewModel.posts?.observe(viewLifecycleOwner) {
+        viewModel.posts.observe(viewLifecycleOwner) {
             adapter?.posts = it
             adapter?.notifyDataSetChanged()
             progressBar?.visibility = View.GONE

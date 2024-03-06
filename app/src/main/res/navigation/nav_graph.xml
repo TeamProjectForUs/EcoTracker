@@ -26,6 +26,10 @@
     <action
         android:id="@+id/action_global_profileViewFragment"
         app:destination="@id/profileViewFragment" />
+
+    <action
+        android:id="@+id/action_global_addPostFragment"
+        app:destination="@id/addPostFragment" />
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.example.greenapp.Modules.Connection.LoginFragment"
@@ -129,6 +133,10 @@
         <action
             android:id="@+id/action_profileViewFragment_self"
             app:destination="@id/profileViewFragment" />
+
+        <argument
+            android:name="user"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/postFullViewFragment"
@@ -170,6 +178,10 @@
     <action
         android:id="@+id/action_global_tipsFragment"
         app:destination="@id/tipsFragment" />
+
+    <action
+        android:id="@+id/action_global_searchFragment"
+        app:destination="@id/userSearchFragment" />
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.example.greenapp.Modules.Profile.ProfileFragment"
@@ -184,4 +196,20 @@
         android:id="@+id/tipsFragment"
         android:name="com.example.greenapp.Modules.Tips.TipsFragment"
         android:label="TipsFragment" />
+    <fragment
+        tools:layout="@layout/fragment_search"
+        android:id="@+id/userSearchFragment"
+        android:name="com.example.greenapp.UserSearchFragment"
+        android:label="UserSearchFragment" />
+
+
+    <action
+        android:id="@+id/action_global_editProfile"
+        app:destination="@id/editProfileFragment" />
+
+    <fragment
+        tools:layout="@layout/fragment_edit_my_profile"
+        android:id="@+id/editProfileFragment"
+        android:name="com.example.greenapp.EditProfileFragment"
+        android:label="EditProfileFragment" />
 </navigation>

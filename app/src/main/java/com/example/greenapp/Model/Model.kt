@@ -33,7 +33,7 @@ class Model private constructor() {
         val instance: Model = Model()
     }
 
-    fun getAllUsers(callback: (List<User>) -> Unit) {
+    fun getAllUsers(callback: (List<UserModelFirebase>) -> Unit) {
         firebaseModel.getAllUsers(callback)
     }
 
@@ -191,14 +191,13 @@ class Model private constructor() {
 
     fun updatePost(
         postUid: String,
-        name: String,
         description: String,
         uri: String,
         coroutineScope: CoroutineScope,
         postsLoadingState: MutableLiveData<LoadingState>,
         callback: () -> Unit,
     ) {
-        firebaseModel.updatePost(postUid, name, description, uri) {
+        firebaseModel.updatePost(postUid, description, uri) {
             refreshAllPosts(coroutineScope, postsLoadingState)
             callback()
         }
@@ -227,11 +226,11 @@ class Model private constructor() {
         post: Post,
         coroutineScope: CoroutineScope,
         postsLoadingState: MutableLiveData<LoadingState>,
-        callback: () -> Unit,
+        callback: (Post) -> Unit,
     ) {
         firebaseModel.addPost(post) {
             refreshAllPosts(coroutineScope, postsLoadingState)
-            callback()
+            callback(post)
         }
     }
 
@@ -244,6 +243,36 @@ class Model private constructor() {
         tip: Tip,
     ) {
         firebaseModel.toggleGoalTip(tip, userGoalsList)
+    }
+
+
+    fun toggleFriend(
+        someOtherUser: UserModelFirebase,
+        userFriendList: MutableList<String>,
+    ) {
+        firebaseModel.toggleFriend(someOtherUser, userFriendList)
+    }
+
+    fun removeMyPost(
+        coroutineScope: CoroutineScope,
+        myPostsLoadingState: MutableLiveData<LoadingState>,
+        myPostsLiveData: MutableLiveData<List<Post>>,
+        post: Post,
+    ) {
+        myPostsLoadingState.value = LoadingState.LOADING
+        coroutineScope.launch {
+            withContext(Dispatchers.IO) {
+                database.postDao().delete(post)
+            }
+        }
+        firebaseModel.removePost(post) {
+            myPostsLoadingState.value = LoadingState.LOADED
+            val mList = mutableListOf<Post>()
+            myPostsLiveData.value?.let {
+                mList.addAll(it.filter { p -> p.postUid != post.postUid })
+            }
+            myPostsLiveData.postValue(mList)
+        }
     }
 
 }

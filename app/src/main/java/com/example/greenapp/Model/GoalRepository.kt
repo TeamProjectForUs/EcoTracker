@@ -1,5 +1,8 @@
 package com.example.greenapp.Model
 
+import androidx.lifecycle.MutableLiveData
+import kotlinx.coroutines.CoroutineScope
+
 class GoalRepository {
 
     fun addGoal(
@@ -44,9 +47,25 @@ class GoalRepository {
     }
 
     fun publishGoal(
-        currentGoals: MutableList<Goal>,
+        coroutineScope: CoroutineScope,
+        postsLoadingState: MutableLiveData<Model.LoadingState>,
+        currentUser: UserModelFirebase,
         goal: Goal,
+        callback: (Post) -> Unit,
     ) {
-
+        val auth = Model.instance.getFireBaseModel().getAuth()
+        val userId = auth.currentUser!!.uid
+        Model.instance.addPost(
+            Post(
+                userId = userId,
+                name = "",
+                userUri = currentUser.getImage(),
+                description = "I have set ${goal.tip.description} as my goal!",
+                isChecked = false,
+                postUid = ""
+            ), coroutineScope,
+            postsLoadingState,
+            callback
+        )
     }
 }

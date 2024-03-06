@@ -74,20 +74,18 @@ class SharedViewModel : ViewModel() {
         Model.instance.refreshAllPosts(viewModelScope, postsListLoadingState)
     }
 
-    fun addPost(post: Post, callback: () -> Unit) {
+    fun addPost(post: Post, callback: (Post) -> Unit) {
         Model.instance.addPost(post, viewModelScope, postsListLoadingState, callback)
     }
 
     fun updatePost(
         postUid: String,
-        name: String,
         description: String,
         uri: String,
         callback: () -> Unit,
     ) {
         Model.instance.updatePost(
             postUid,
-            name,
             description,
             uri,
             viewModelScope,
@@ -106,14 +104,19 @@ class SharedViewModel : ViewModel() {
         Model.instance.goalRepository.removeGoal(currentUserGoals, goal)
     }
 
-    fun publishGoal(goal: Goal) {
-        val currentUserGoals = currentUser.value?.goals ?: mutableListOf()
-        Model.instance.goalRepository.publishGoal(currentUserGoals, goal)
-    }
+
 
     fun addGoal(tip: Tip) {
         val currentUserGoals = currentUser.value?.goals ?: mutableListOf()
         Model.instance.goalRepository.addGoal(currentUserGoals, tip)
+    }
+
+
+    fun toggleFriend(
+        someOtherUser: UserModelFirebase,
+        userFriendList: MutableList<String>,
+    ) {
+        Model.instance.toggleFriend(someOtherUser, userFriendList)
     }
 
 

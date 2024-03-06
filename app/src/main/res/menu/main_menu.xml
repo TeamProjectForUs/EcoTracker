@@ -10,9 +10,11 @@
         android:id="@+id/btn_ecotips"
         android:title="@string/ecotips" />
 
+
     <item
-        android:id="@+id/btn_settings"
-        android:title="@string/settings" />
+        android:id="@+id/btn_usersearch"
+        android:title="@string/usersearch" />
+
 
     <item
         android:id="@+id/btnLogout_menu"

@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.greenapp.BaseMenuFragment
@@ -66,7 +67,12 @@ class TipsFragment : BaseMenuFragment() {
         val allTipsBtn = binding.allTipsBtn
         val newTipsBtn = binding.newTipsBtn
 
+        val addPostBtn = binding.addPostBtn
 
+        addPostBtn.setOnClickListener {
+            Navigation.findNavController(it)
+                .navigate(R.id.action_global_addPostFragment)
+        }
 
 
         binding.pullToRefresh.setOnRefreshListener {

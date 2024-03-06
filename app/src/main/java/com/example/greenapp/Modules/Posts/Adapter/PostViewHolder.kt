@@ -1,74 +1,75 @@
 package com.example.greenapp.Modules.Posts.Adapter;
 
 
-import android.content.Context
-import android.net.Uri
 import com.example.greenapp.Model.Post
 import android.util.Log
 import android.view.View
-import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
-import com.example.greenapp.Model.Model
-import com.example.greenapp.Modules.Posts.PostsRecyclerViewActivity
+import com.example.greenapp.FeedFragment
 import com.example.greenapp.R
 import com.squareup.picasso.Picasso
-import java.io.File
-import kotlin.io.path.fileVisitor
 
 class PostViewHolder(
     private val itemView: View,
-    private val listener: PostsRecyclerViewActivity.OnItemClickListener?,
+    private val listener: FeedFragment.OnItemClickListener?,
     var posts: List<Post>?,
+    var onProfile: Boolean = false,
 ) : RecyclerView.ViewHolder(itemView) {
 
     private var imageView: ImageView? = null
     private var desTextView: TextView? = null
-    private var postCheckbox: CheckBox? = null
+    private var postEditBtn: ImageView? = null
+    private var postDeleteBtn: ImageView? = null
+
     private var avatar: ImageView? = null
     var post: Post? = null
 
     init {
         imageView = itemView.findViewById(R.id.tvPostListRowImage)
-        postCheckbox = itemView.findViewById(R.id.cbPostListRow)
+        postEditBtn = itemView.findViewById(R.id.ivEdit)
         desTextView = itemView.findViewById(R.id.tvPostListRowDes)
+        postDeleteBtn = itemView.findViewById(R.id.ivDelete)
         avatar = itemView.findViewById(R.id.ivPostListRowAvatar)
 
-        postCheckbox?.setOnClickListener {
-            val post = posts?.get(adapterPosition)
-            post?.isChecked = postCheckbox?.isChecked ?: false
-        }
-
         itemView.setOnClickListener {
-            Log.i("TAG", "PostViewHolder: Position clicked $adapterPosition")
 
-            listener?.onItemClick(adapterPosition)
-            listener?.onStudentClicked(post)
         }
     }
 
-    fun bind(post: Post?) {
+    fun bind(post: Post) {
         this.post = post
-        Picasso.get().load(post?.uri?.toUri()).resize(1000, 1000).centerInside().into(avatar)
+        Picasso.get().load(post.uri.toUri()).resize(1000, 1000).centerInside().into(avatar)
 
-        desTextView?.text = post?.description
-
+        desTextView?.text = post.description
+        if (!onProfile) {
+            postDeleteBtn?.visibility = View.GONE
+        }
+        if (!post.isDefaultImage()) {
+            Picasso.get()
+                .load(post.uri.toUri())
+                .resize(1000, 1000)
+                .centerInside()
+                .into(imageView)
+        } else {
+            imageView?.visibility = View.GONE
+        }
         Picasso.get()
-            .load(post?.uri?.toUri())
+            .load(post.userUri.toUri())
             .resize(1000, 1000)
             .centerInside()
-            .into(imageView)
-
-        Picasso.get()
-            .load(post?.userUri?.toUri())
-            .resize(1000, 1000)
-            .centerInside().into(avatar)
+            .into(avatar)
         // idTextView?.text = post?.id
-        postCheckbox?.apply {
-            isChecked = post?.isChecked ?: false
+        postEditBtn?.setOnClickListener {
+            Log.i("TAG", "PostViewHolder: Position clicked $adapterPosition")
+            listener?.onItemClick(adapterPosition)
+        }
+        if (onProfile) {
+            postDeleteBtn?.setOnClickListener {
+                listener?.onItemClickRemove(position)
+            }
         }
     }
 }

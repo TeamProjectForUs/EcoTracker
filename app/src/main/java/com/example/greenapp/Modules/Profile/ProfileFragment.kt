@@ -155,7 +155,6 @@ class ProfileFragment : BaseMenuProfileFragment() {
     }
 
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         profileViewModel = ViewModelProvider(this)[ProfileViewModel::class.java]

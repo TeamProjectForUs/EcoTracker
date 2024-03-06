@@ -40,7 +40,11 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
         val menuButton = findViewById<ImageView>(R.id.menuBtn)
         val backButton = findViewById<ImageView>(R.id.backBtn)
+        val editProfileBtn = findViewById<MaterialButton>(R.id.editProfileBtn)
 
+        editProfileBtn.setOnClickListener {
+            navController?.navigate(R.id.action_global_editProfile)
+        }
         backButton.setOnClickListener {
             if (navController?.currentDestination?.id == R.id.feedFragment) {
                 return@setOnClickListener
@@ -65,9 +69,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             menu.show()
         }
 
-
     }
-
 
     fun showMenu() {
         val view = findViewById<ConstraintLayout>(R.id.toolbar)
@@ -120,6 +122,10 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
             R.id.btn_ecotips -> {
                 navController?.navigate(R.id.action_global_tipsFragment)
+                true
+            }
+            R.id.btn_usersearch -> {
+                navController?.navigate(R.id.action_global_searchFragment)
                 true
             }
             /* R.id.btnLogoutProfile -> {

@@ -1,6 +1,7 @@
 package com.example.greenapp.Modules.Posts
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -25,7 +26,7 @@ class PostFullViewFragment : BaseFragment() {
 
     private var postUid: String? = null
     private var postUri: String? = null
-    private var postUserid: String? = null
+    private var postUserId: String? = null
 
 
     private var _binding: FragmentPostFullViewBinding? = null
@@ -54,48 +55,46 @@ class PostFullViewFragment : BaseFragment() {
     private fun setupUI(view: View) {
 
         postUid = args.postUid
-        postUserid = args.postUserId
+        postUserId = args.postUserId
         postUri = args.postImageUri
-        binding.name.text = args.postName
         binding.description.text = args.postDes
+
         Picasso.get()
             .load(args.postImageUri)
             .resize(1000, 1000)
             .centerInside()
             .into(binding.image)
 
+        Log.d("user id", postUserId.toString())
 
         getSharedViewModel().currentUser.observe(viewLifecycleOwner) { user ->
-            if (postUserid.equals(user.id)) {
+            if (postUserId.equals(user.id)) {
                 binding.btnEdit.visibility = View.VISIBLE
             }
             getSharedViewModel().currentUser.removeObservers(viewLifecycleOwner)
-
         }
+
         binding.btnEdit.setOnClickListener {
-            binding.name.visibility = View.INVISIBLE
-            binding.description.visibility = View.INVISIBLE
-            binding.nameEdit.visibility = View.VISIBLE
+            binding.description.visibility = View.GONE
             binding.descriptionEdit.visibility = View.VISIBLE
             binding.btnCancel.visibility = View.VISIBLE
             binding.btnSave.visibility = View.VISIBLE
             binding.btnEdit.visibility = View.GONE
-            binding.name.text = args.postName
             binding.description.text = args.postDes
         }
+
+
         binding.btnCancel.setOnClickListener {
-            binding.name.visibility = View.VISIBLE
             binding.description.visibility = View.VISIBLE
-            binding.nameEdit.visibility = View.INVISIBLE
-            binding.descriptionEdit.visibility = View.INVISIBLE
-            binding.btnCancel.visibility = View.INVISIBLE
-            binding.btnSave.visibility = View.INVISIBLE
+            binding.descriptionEdit.visibility = View.GONE
+            binding.btnCancel.visibility = View.GONE
+            binding.btnSave.visibility = View.GONE
             binding.btnEdit.visibility = View.VISIBLE
         }
+
         binding.btnSave.setOnClickListener {
-            val name = binding.nameEdit.text.toString()
             val des = binding.descriptionEdit.text.toString()
-            viewModel.updatePost(postUid!!, name, des, postUri!!) {
+            viewModel.updatePost(postUid!!, des, postUri!!) {
                 Toast.makeText(context, " post updated.", Toast.LENGTH_SHORT).show()
                 Navigation.findNavController(view)
                     .navigate(R.id.action_postFullViewFragment_to_feedFragment)
