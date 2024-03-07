@@ -3,25 +3,27 @@ package com.example.greenapp.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.greenapp.Model.UserModelFirebase
+import com.example.greenapp.models.User
 import com.example.greenapp.databinding.UserSearchRowBinding
 import com.squareup.picasso.Picasso
 
 class UsersAdapter(
-    private var users: List<UserModelFirebase>,
-    private val onUserClick: (UserModelFirebase) -> Unit,
+    private var users: List<User>,
+    private val onUserClick: (User) -> Unit,
 ) : RecyclerView.Adapter<UsersAdapter.UserViewHolder>() {
 
 
-    fun setUsers(users: List<UserModelFirebase>) {
-        this.users = users
-        notifyDataSetChanged()
+    fun setUsers(users: List<User>?) {
+        users?.let {
+            this.users = it
+            notifyDataSetChanged()
+        }
     }
 
     class UserViewHolder(val binding: UserSearchRowBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(user: UserModelFirebase) {
+        fun bind(user: User) {
             Picasso.get()
                 .load(user.getImage())
                 .resize(5000, 5000)

@@ -1,15 +1,13 @@
 package com.example.greenapp
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.example.greenapp.modules.Common.SharedViewModel
 
 
 open class BaseFragment: Fragment() {
 
-    fun getSharedViewModel() :SharedViewModel {
+    fun getSharedViewModel() : SharedViewModel {
         val act = activity as MainActivity
         return act.getSharedViewModel()
     }

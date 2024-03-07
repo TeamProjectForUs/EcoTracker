@@ -1,13 +1,14 @@
-package com.example.greenapp.Modules.Tips
+package com.example.greenapp.modules.Tips
 
-import android.adservices.topics.Topic
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
-import com.example.greenapp.Model.Goal
-import com.example.greenapp.Model.Model
-import com.example.greenapp.Model.Tip
+import com.example.greenapp.models.Goal
+import com.example.greenapp.models.Model
+import com.example.greenapp.models.MyTip
+import com.example.greenapp.models.Tip
 
 interface TipsRepository {
     fun dislikeTip(
@@ -34,7 +35,7 @@ interface TipsGoalsRepository : TipsRepository {
 class TipsViewModel : ViewModel(), TipsRepository {
 
     val allTipsLoadingState = MutableLiveData(Model.LoadingState.LOADED)
-    var allTipsLiveData: MutableLiveData<List<Tip>> = Model.instance.getAllTips(allTipsLoadingState)
+    var allTipsLiveData: LiveData<List<Tip>> = Model.instance.tipsRepository.getAllTips(viewModelScope,allTipsLoadingState)
     var newTipsLiveData = allTipsLiveData.map {
         it.filter { tip -> tip.isNew() }
     }
@@ -43,26 +44,25 @@ class TipsViewModel : ViewModel(), TipsRepository {
         userLikeList: MutableList<String>,
         tip: Tip,
     ) {
-        Model.instance.toggleTipLike(viewModelScope, tip, userLikeList)
+        Model.instance.tipsRepository.toggleTipLike(viewModelScope, MyTip.fromTip(tip), userLikeList)
     }
-
 
     override fun dislikeTip(
         userDislikeList: MutableList<String>,
         tip: Tip,
     ) {
-        Model.instance.dislikeTip(tip, userDislikeList)
+        Model.instance.tipsRepository.dislikeTip(tip, userDislikeList)
     }
 
     override fun undoDislikeTip(
         userDislikeList: MutableList<String>,
         tip: Tip,
     ) {
-        Model.instance.undoDislikeTip(tip, userDislikeList)
+        Model.instance.tipsRepository.undoDislikeTip(tip, userDislikeList)
     }
 
     fun refreshTips() {
-        Model.instance.refreshAllTips(allTipsLoadingState, allTipsLiveData)
+        Model.instance.tipsRepository.refreshAllTips(viewModelScope,allTipsLoadingState)
     }
 
 }

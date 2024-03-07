@@ -1,9 +1,6 @@
 package com.example.greenapp
 
-import android.app.AlertDialog
-import android.content.DialogInterface
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,9 +9,9 @@ import android.widget.ProgressBar
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.greenapp.Model.Model
-import com.example.greenapp.Model.Post
-import com.example.greenapp.Modules.Posts.Adapter.PostsRecyclerAdapter
+import com.example.greenapp.models.Model
+import com.example.greenapp.modules.Common.SharedViewModel
+import com.example.greenapp.adapters.PostsRecyclerAdapter
 import com.example.greenapp.databinding.FragmentFeedBinding
 
 

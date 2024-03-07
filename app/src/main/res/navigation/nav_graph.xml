@@ -32,7 +32,7 @@
         app:destination="@id/addPostFragment" />
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.example.greenapp.Modules.Connection.LoginFragment"
+        android:name="com.example.greenapp.modules.Auth.LoginFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_login">
         <action
@@ -44,7 +44,7 @@
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
-        android:name="com.example.greenapp.Modules.Connection.RegisterFragment"
+        android:name="com.example.greenapp.modules.Auth.RegisterFragment"
         android:label="fragment_register"
         tools:layout="@layout/fragment_register">
         <action
@@ -74,7 +74,7 @@
     </fragment>
     <fragment
         android:id="@+id/addPostFragment"
-        android:name="com.example.greenapp.Modules.Connection.AddPostFragment"
+        android:name="com.example.greenapp.modules.Posts.AddPostFragment"
         android:label="fragment_add_post"
         tools:layout="@layout/fragment_add_post">
         <action
@@ -86,7 +86,7 @@
     </fragment>
     <fragment
         android:id="@+id/myPostsFragment"
-        android:name="com.example.greenapp.Modules.Profile.MyPostsFragment"
+        android:name="com.example.greenapp.modules.Profile.MyPostsFragment"
         android:label="fragment_my_posts"
         tools:layout="@layout/fragment_my_posts">
         <action
@@ -101,7 +101,7 @@
     </fragment>
     <fragment
         android:id="@+id/myGoalsFragment"
-        android:name="com.example.greenapp.Modules.Profile.MyGoalsFragment"
+        android:name="com.example.greenapp.modules.Profile.MyGoalsFragment"
         android:label="fragment_my_goals"
         tools:layout="@layout/fragment_my_goals">
         <action
@@ -113,12 +113,12 @@
     </fragment>
     <fragment
         android:id="@+id/myTipsFragment"
-        android:name="com.example.greenapp.MyTipsFragment"
+        android:name="com.example.greenapp.modules.Profile.MyTipsFragment"
         android:label="fragment_my_tips"
         tools:layout="@layout/fragment_my_tips" />
     <fragment
         android:id="@+id/profileViewFragment"
-        android:name="com.example.greenapp.ProfileViewFragment"
+        android:name="com.example.greenapp.modules.Profile.ProfileViewFragment"
         android:label="fragment_profile_view"
         tools:layout="@layout/fragment_profile_view">
         <action
@@ -140,7 +140,7 @@
     </fragment>
     <fragment
         android:id="@+id/postFullViewFragment"
-        android:name="com.example.greenapp.Modules.Posts.PostFullViewFragment"
+        android:name="com.example.greenapp.modules.Posts.PostFullViewFragment"
         android:label="fragment_post_full_view"
         tools:layout="@layout/fragment_post_full_view">
 
@@ -184,7 +184,7 @@
         app:destination="@id/userSearchFragment" />
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.example.greenapp.Modules.Profile.ProfileFragment"
+        android:name="com.example.greenapp.modules.Profile.ProfileFragment"
         android:label="ProfileFragment"
         tools:layout="@layout/fragment_profile">
         <action
@@ -192,15 +192,15 @@
             app:destination="@id/profileViewFragment" />
     </fragment>
     <fragment
-        tools:layout="@layout/fragment_tips"
         android:id="@+id/tipsFragment"
-        android:name="com.example.greenapp.Modules.Tips.TipsFragment"
-        android:label="TipsFragment" />
+        android:name="com.example.greenapp.modules.Tips.TipsFragment"
+        android:label="TipsFragment"
+        tools:layout="@layout/fragment_tips" />
     <fragment
-        tools:layout="@layout/fragment_search"
         android:id="@+id/userSearchFragment"
-        android:name="com.example.greenapp.UserSearchFragment"
-        android:label="UserSearchFragment" />
+        android:name="com.example.greenapp.modules.Common.UserSearchFragment"
+        android:label="UserSearchFragment"
+        tools:layout="@layout/fragment_search" />
 
 
     <action
@@ -208,8 +208,8 @@
         app:destination="@id/editProfileFragment" />
 
     <fragment
-        tools:layout="@layout/fragment_edit_my_profile"
         android:id="@+id/editProfileFragment"
-        android:name="com.example.greenapp.EditProfileFragment"
-        android:label="EditProfileFragment" />
+        android:name="com.example.greenapp.modules.Profile.EditProfileFragment"
+        android:label="EditProfileFragment"
+        tools:layout="@layout/fragment_edit_my_profile" />
 </navigation>

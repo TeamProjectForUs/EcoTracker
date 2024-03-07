@@ -1,9 +1,7 @@
-package com.example.greenapp.Modules.Profile
+package com.example.greenapp.modules.Profile
 
 import android.app.AlertDialog
-import android.content.DialogInterface
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,8 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.greenapp.BaseFragment
 import com.example.greenapp.FeedFragment
-import com.example.greenapp.Model.Post
-import com.example.greenapp.Modules.Posts.Adapter.PostsRecyclerAdapter
+import com.example.greenapp.models.Post
+import com.example.greenapp.adapters.PostsRecyclerAdapter
 import com.example.greenapp.R
 import com.example.greenapp.databinding.FragmentMyPostsBinding
 import com.google.android.material.button.MaterialButton

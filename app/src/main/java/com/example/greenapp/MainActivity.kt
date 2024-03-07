@@ -7,13 +7,13 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.ImageView
 import android.widget.PopupMenu
-import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
-import com.example.greenapp.Model.Model
+import com.example.greenapp.models.Model
+import com.example.greenapp.modules.Common.SharedViewModel
 import com.google.android.material.button.MaterialButton
 
 
@@ -110,7 +110,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             }
 
             R.id.btnLogout_menu -> {
-                Model.instance.signOut()
+                Model.instance.userRepository.signOut()
                 navController?.navigate(R.id.action_global_startFragment)
                 true
             }

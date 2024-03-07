@@ -7,7 +7,7 @@
     android:background="@color/white"
     android:gravity="center|top"
     android:orientation="vertical"
-    tools:context=".Modules.Posts.PostFullViewFragment">
+    tools:context=".modules.Posts.PostFullViewFragment">
 
     <TextView
         android:textAlignment="center"

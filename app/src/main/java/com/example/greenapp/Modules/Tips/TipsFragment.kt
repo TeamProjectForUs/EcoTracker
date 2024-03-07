@@ -1,29 +1,24 @@
-package com.example.greenapp.Modules.Tips
+package com.example.greenapp.modules.Tips
 
 import android.content.res.ColorStateList
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.greenapp.BaseMenuFragment
-import com.example.greenapp.Model.Model
-import com.example.greenapp.Model.Tip
+import com.example.greenapp.models.Model
+import com.example.greenapp.models.Tip
 import com.example.greenapp.R
 import com.example.greenapp.adapters.TipsAdapter
 import com.example.greenapp.databinding.FragmentTipsBinding
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 class TipsFragment : BaseMenuFragment() {
 
@@ -132,15 +127,12 @@ fun BaseMenuFragment.createTipsAdapter(
     tipsType: TipsAdapter.TipAdapterData,
     tipsRepository: TipsRepository,
     isLikedPage: Boolean = false,
-    onMakeGoal: (Tip, Int) -> Unit = {_,_ ->}
+    onMakeGoal: (Tip, Int) -> Unit = { _, _ -> },
 ): TipsAdapter {
     val sharedVm = getSharedViewModel()
     var tipsAdapter: TipsAdapter? = null
     tipsAdapter = TipsAdapter(
-        sharedVm.currentUser.value?.tipDislikeList ?: listOf(),
-        sharedVm.currentUser.value?.currentLikeList ?: listOf(),
-        sharedVm.currentUser.value?.goals ?: listOf(),
-        tipsType,
+        tipData = tipsType,
         onTipDislike = { tip, position ->
             sharedVm.currentUser.value?.let { user ->
                 if (user.tipDislikeList.contains(tip.id)) {
@@ -166,5 +158,8 @@ fun BaseMenuFragment.createTipsAdapter(
         onMakeGoal = onMakeGoal,
         isLikedPage = isLikedPage,
     )
+    sharedVm.currentUser.observe(viewLifecycleOwner) {
+        tipsAdapter.updateUserData(it)
+    }
     return tipsAdapter
 }

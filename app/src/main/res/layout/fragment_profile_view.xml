@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="#009688"
     android:fitsSystemWindows="true"
-    tools:context=".ProfileViewFragment">
+    tools:context=".modules.Profile.ProfileViewFragment">
 
 
     <ImageView

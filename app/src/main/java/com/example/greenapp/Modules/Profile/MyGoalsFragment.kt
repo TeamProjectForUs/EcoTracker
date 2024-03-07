@@ -1,4 +1,4 @@
-package com.example.greenapp.Modules.Profile
+package com.example.greenapp.modules.Profile
 
 import android.os.Bundle
 import android.view.LayoutInflater

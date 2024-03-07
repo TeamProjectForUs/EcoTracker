@@ -7,16 +7,16 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.example.greenapp.Model.Goal
-import com.example.greenapp.Model.Tip
-import com.example.greenapp.Model.UserModelFirebase
+import com.example.greenapp.models.Goal
+import com.example.greenapp.models.Tip
+import com.example.greenapp.models.User
 import com.example.greenapp.R
 import com.example.greenapp.databinding.TipItemBinding
 
 class TipsAdapter(
-    private var userDislikeList: List<String>,
-    private var userLikeList: List<String>,
-    private var userGoalList: List<Goal>,
+    private var userDislikeList: List<String> = listOf(),
+    private var userLikeList: List<String> = listOf(),
+    private var userGoalList: List<Goal> = listOf(),
     private var tipData: TipAdapterData,
     private val onTipDislike: (Tip, Int) -> Unit,
     private val onTipLike: (Tip, Int) -> Unit,
@@ -26,6 +26,15 @@ class TipsAdapter(
 
     fun setTipsData(data: TipAdapterData) {
         tipData = data
+        notifyDataSetChanged()
+    }
+
+    fun updateUserData(
+        user: User
+    ) {
+        this.userDislikeList = user.tipDislikeList
+        this.userLikeList = user.currentLikeList
+        this.userGoalList = user.goals
         notifyDataSetChanged()
     }
 

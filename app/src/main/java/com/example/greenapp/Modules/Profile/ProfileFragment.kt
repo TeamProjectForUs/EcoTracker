@@ -1,4 +1,4 @@
-package com.example.greenapp.Modules.Profile
+package com.example.greenapp.modules.Profile
 
 import android.content.res.ColorStateList
 import android.os.Bundle
@@ -12,9 +12,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import com.example.greenapp.BaseMenuProfileFragment
-import com.example.greenapp.Modules.Connection.AddPostFragment
-import com.example.greenapp.Modules.Tips.TipsViewModel
-import com.example.greenapp.MyTipsFragment
+import com.example.greenapp.modules.Posts.AddPostFragment
+import com.example.greenapp.modules.Tips.TipsViewModel
 import com.example.greenapp.R
 import com.example.greenapp.databinding.FragmentProfileBinding
 import com.google.android.material.button.MaterialButton
