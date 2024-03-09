@@ -10,7 +10,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
-import com.example.greenapp.models.Model
+import com.example.greenapp.database.Model
 import com.example.greenapp.R
 
 
@@ -41,9 +41,11 @@ class LoginFragment : Fragment() {
 
         ConnectButton?.setOnClickListener {
 
+
+
             val email=nameTextField?.text.toString()
             val password=PasswordTextField?.text.toString()
-
+            ConnectButton?.isEnabled = false
             Model.instance.userRepository.login(email,password,requireActivity()){
                 if(it){
                     Toast.makeText(context, " login successful.", Toast.LENGTH_SHORT).show()
@@ -52,7 +54,7 @@ class LoginFragment : Fragment() {
                 else{
                     Toast.makeText(context, " login failed.", Toast.LENGTH_SHORT).show()
                 }
-
+                ConnectButton?.isEnabled = true
             }
         }
     }

@@ -4,13 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".AlertsFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
         android:id="@+id/notificationsLayout"
-        android:layout_width="407dp"
-        android:layout_height="55dp"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
         android:layout_marginStart="4dp"
         android:layout_marginTop="16dp"
         android:orientation="horizontal"
@@ -27,19 +26,12 @@
             android:textColor="@color/black"
             android:textSize="30dp" />
 
-        <ImageView
-            android:id="@+id/add_post_alertBtn"
-            android:layout_width="46dp"
-            android:layout_height="35dp"
-            android:layout_marginStart="16dp"
-            android:layout_weight="0"
-            android:src="@drawable/img_newpost" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvAlerts"
-        android:layout_width="406dp"
-        android:layout_height="641dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

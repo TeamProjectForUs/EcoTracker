@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.example.greenapp.models.Goal
-import com.example.greenapp.models.Model
+import com.example.greenapp.database.Model
 import com.example.greenapp.models.MyTip
 import com.example.greenapp.models.Tip
 

@@ -12,6 +12,7 @@ import com.example.greenapp.BaseFragment
 import com.example.greenapp.R
 import com.example.greenapp.modules.Common.SharedViewModel
 import com.example.greenapp.databinding.FragmentPostFullViewBinding
+import com.example.greenapp.models.User
 import com.squareup.picasso.Picasso
 
 
@@ -26,8 +27,6 @@ class PostFullViewFragment : BaseFragment() {
     private var _binding: FragmentPostFullViewBinding? = null
     private val binding: FragmentPostFullViewBinding get() = _binding!!
 
-    private lateinit var viewModel: SharedViewModel
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,7 +36,6 @@ class PostFullViewFragment : BaseFragment() {
         _binding = FragmentPostFullViewBinding.inflate(inflater)
         val view = binding.root
         setupUI(view)
-        viewModel = getSharedViewModel()
         return view
     }
 
@@ -53,20 +51,29 @@ class PostFullViewFragment : BaseFragment() {
         postUri = args.postImageUri
         binding.description.text = args.postDes
 
-        Picasso.get()
-            .load(args.postImageUri)
-            .resize(1000, 1000)
-            .centerInside()
-            .into(binding.image)
 
-        Log.d("user id", postUserId.toString())
+        if (!args.postImageUri.equals(User.IMAGE_DEFAULT)) {
+            Picasso.get()
+                .load(args.postImageUri)
+                .resize(1000, 1000)
+                .centerInside()
+                .into(binding.image)
 
-        getSharedViewModel().currentUser.observe(viewLifecycleOwner) { user ->
-            if (postUserId.equals(user.id)) {
-                binding.btnEdit.visibility = View.VISIBLE
-            }
-            getSharedViewModel().currentUser.removeObservers(viewLifecycleOwner)
+        } else {
+            binding.image.visibility = View.GONE
         }
+
+        getSharedViewModel()
+            .currentUser
+            .observe(viewLifecycleOwner) { user ->
+                if (postUserId.equals(user?.id)) {
+                    binding.btnEdit.visibility = View.VISIBLE
+                } else {
+                    binding.btnEdit.visibility = View.GONE
+                }
+            }
+
+        binding.btnEdit.visibility = View.VISIBLE
 
         binding.btnEdit.setOnClickListener {
             binding.description.visibility = View.GONE
@@ -88,7 +95,8 @@ class PostFullViewFragment : BaseFragment() {
 
         binding.btnSave.setOnClickListener {
             val des = binding.descriptionEdit.text.toString()
-            viewModel.updatePost(postUid!!, des, postUri!!) {
+            getSharedViewModel()
+                .updatePost(postUid!!, des, postUri!!) {
                 Toast.makeText(context, " post updated.", Toast.LENGTH_SHORT).show()
                 Navigation.findNavController(view)
                     .navigate(R.id.action_postFullViewFragment_to_feedFragment)

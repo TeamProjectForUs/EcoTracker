@@ -3,7 +3,7 @@ package com.example.greenapp.modules.Common
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.greenapp.models.Model
+import com.example.greenapp.database.Model
 import com.example.greenapp.models.OtherUser
 
 class UserSearchViewModel : ViewModel() {

@@ -9,9 +9,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.greenapp.BaseMenuFragment
-import com.example.greenapp.models.Model
+import com.example.greenapp.database.Model
 import com.example.greenapp.adapters.UsersAdapter
 import com.example.greenapp.databinding.FragmentSearchBinding
+import com.example.greenapp.modules.Profile.createNotificationsMenu
 import com.google.gson.Gson
 
 class UserSearchFragment : BaseMenuFragment() {
@@ -52,6 +53,8 @@ class UserSearchFragment : BaseMenuFragment() {
         userSearchViewModel.userResults.observe(viewLifecycleOwner) { users ->
             adapter.setUsers(users)
         }
+        createNotificationsMenu(binding.notificationsSearchPageBtn)
+
 
         userSearchViewModel.userLoadingState.observe(viewLifecycleOwner) { loadingState ->
             if (loadingState == null) return@observe

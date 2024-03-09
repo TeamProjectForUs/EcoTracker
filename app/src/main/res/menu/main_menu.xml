@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/btnProfileFragment"
-        android:title="@string/profile"></item>
+        android:title="@string/profile" />
 
     <item
         android:id="@+id/btn_ecotips"
@@ -14,10 +14,11 @@
     <item
         android:id="@+id/btn_usersearch"
         android:title="@string/usersearch" />
-
+    <item
+        android:id="@+id/btnAirQuality"
+        android:title="@string/air_quality" />
 
     <item
         android:id="@+id/btnLogout_menu"
-        android:title="@string/sign_out"
-        />
+        android:title="@string/sign_out" />
 </menu>

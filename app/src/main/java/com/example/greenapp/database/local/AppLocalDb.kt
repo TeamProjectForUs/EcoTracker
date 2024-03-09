@@ -14,7 +14,10 @@ import com.example.greenapp.models.Tip
 import com.example.greenapp.models.User
 
 
-@Database(entities = [Post::class, Tip::class, MyTip::class, User::class, OtherUser::class, Goal::class], version = 13)
+@Database(
+    entities = [Post::class, Tip::class, MyTip::class, User::class, OtherUser::class, Goal::class],
+    version = 15
+)
 @TypeConverters(Converters::class)
 abstract class AppLocalDbRepository : RoomDatabase() {
     abstract fun postDao(): PostDao

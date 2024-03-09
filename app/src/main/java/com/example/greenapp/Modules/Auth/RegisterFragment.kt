@@ -10,7 +10,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
-import com.example.greenapp.models.Model
+import com.example.greenapp.database.Model
 import com.example.greenapp.R
 
 
@@ -46,7 +46,7 @@ class RegisterFragment : Fragment() {
             val name = nameTextField?.text.toString()
             val email = emailTextField?.text.toString()
             val password = passwordTextField?.text.toString()
-
+            registerBtn?.isEnabled = false
             Model.instance.userRepository.addUser(
                 lifecycleScope,
                 name,
@@ -56,11 +56,13 @@ class RegisterFragment : Fragment() {
             ) {
                 it?.let {
                     Toast.makeText(context, "Sign up is successful", Toast.LENGTH_SHORT).show()
+
                     Navigation.findNavController(view)
                         .navigate(R.id.action_registerFragment_to_feedFragment)
                 } ?: run {
                     Toast.makeText(context, "Sign up is failed", Toast.LENGTH_SHORT).show()
                 }
+                registerBtn?.isEnabled = true
             }
         }
     }

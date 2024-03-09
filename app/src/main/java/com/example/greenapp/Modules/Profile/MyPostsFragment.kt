@@ -17,6 +17,8 @@ import com.example.greenapp.adapters.PostsRecyclerAdapter
 import com.example.greenapp.R
 import com.example.greenapp.databinding.FragmentMyPostsBinding
 import com.google.android.material.button.MaterialButton
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 
 
 class MyPostsFragment : BaseFragment() {
@@ -48,7 +50,11 @@ class MyPostsFragment : BaseFragment() {
         val sharedVm = getSharedViewModel()
         postsRecyclerView.setHasFixedSize(true)
         postsRecyclerView.layoutManager = LinearLayoutManager(context)
-        adapter = PostsRecyclerAdapter(listOf(), onProfile = true)
+        adapter = PostsRecyclerAdapter(
+            currentUserId = sharedVm.currentUser.value?.id ?: Firebase.auth.uid ?: "",
+            posts = listOf(),
+            onProfile = true
+        )
         val userId = sharedVm.currentUser.value?.id ?: ""
         adapter.listener = object : FeedFragment.OnItemClickListener {
 

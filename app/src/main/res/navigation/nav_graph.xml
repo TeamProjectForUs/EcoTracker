@@ -120,7 +120,7 @@
         android:id="@+id/profileViewFragment"
         android:name="com.example.greenapp.modules.Profile.ProfileViewFragment"
         android:label="fragment_profile_view"
-        tools:layout="@layout/fragment_profile_view">
+        tools:layout="@layout/fragment_profile_other">
         <action
             android:id="@+id/action_profileViewFragment_to_myPostsFragment"
             app:destination="@id/myPostsFragment" />
@@ -207,9 +207,27 @@
         android:id="@+id/action_global_editProfile"
         app:destination="@id/editProfileFragment" />
 
+
+    <action
+        android:id="@+id/action_global_airQaulity"
+        app:destination="@id/airQualityFragment" />
+
+    <action
+        android:id="@+id/action_global_myAlerts"
+        app:destination="@id/myAlertsFragment" />
     <fragment
         android:id="@+id/editProfileFragment"
         android:name="com.example.greenapp.modules.Profile.EditProfileFragment"
         android:label="EditProfileFragment"
         tools:layout="@layout/fragment_edit_my_profile" />
+    <fragment
+        android:id="@+id/myAlertsFragment"
+        android:name="com.example.greenapp.modules.Profile.MyAlertsFragment"
+        android:label="MyAlertsFragment"
+        tools:layout="@layout/fragment_my_alerts" />
+    <fragment
+        tools:layout="@layout/fragment_air_quality"
+        android:id="@+id/airQualityFragment"
+        android:name="com.example.greenapp.modules.AirQuality.AirQualityFragment"
+        android:label="AirQualityFragment" />
 </navigation>

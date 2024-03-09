@@ -83,6 +83,16 @@
                       <LayoutPositions />
                     </value>
                   </entry>
+                  <entry key="action_global_editProfile">
+                    <value>
+                      <LayoutPositions />
+                    </value>
+                  </entry>
+                  <entry key="action_global_myAlerts">
+                    <value>
+                      <LayoutPositions />
+                    </value>
+                  </entry>
                   <entry key="action_global_postFullViewFragment">
                     <value>
                       <LayoutPositions />
@@ -135,6 +145,18 @@
                               </value>
                             </entry>
                           </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="airQualityFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="1022" />
+                            <option name="y" value="1357" />
+                          </Point>
                         </option>
                       </LayoutPositions>
                     </value>
@@ -209,6 +231,18 @@
                               </value>
                             </entry>
                           </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="myAlertsFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="920" />
+                            <option name="y" value="2174" />
+                          </Point>
                         </option>
                       </LayoutPositions>
                     </value>

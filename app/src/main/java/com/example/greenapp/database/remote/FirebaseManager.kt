@@ -4,12 +4,14 @@ import android.app.Activity
 import androidx.core.net.toUri
 import androidx.lifecycle.MutableLiveData
 import com.example.greenapp.models.Goal
-import com.example.greenapp.models.Model
+import com.example.greenapp.database.Model
+import com.example.greenapp.models.FriendNotification
 import com.example.greenapp.models.MyTip
 import com.example.greenapp.models.OtherUser
 import com.example.greenapp.models.Post
 import com.example.greenapp.models.Tip
 import com.example.greenapp.models.User
+import com.example.greenapp.models.User.Companion.FRIEND_REQUESTS_KEY
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -33,18 +35,22 @@ class FirebaseManager {
     private val db = Firebase.firestore
     private var auth: FirebaseAuth
     private var firebaseref: DatabaseReference
+
     companion object {
         const val USERS_COLLECTION_PATH = "users"
         const val POSTS_COLLECTION_PATH = "posts"
         const val TIPS_COLLECTION_PATH = "tips"
         const val FAVORITE_TIPS = "favorite_tips"
     }
+
     fun getDB(): FirebaseFirestore {
         return db
     }
+
     fun getAuth(): FirebaseAuth {
         return auth
     }
+
     init {
         val settings = firestoreSettings {
             setLocalCacheSettings(memoryCacheSettings { })
@@ -55,6 +61,7 @@ class FirebaseManager {
         firebaseref = FirebaseDatabase.getInstance().getReference("posts")
 
     }
+
     fun getMyTips(
         currentLikeList: MutableList<String>,
         callback: (List<MyTip>) -> Unit,
@@ -67,6 +74,7 @@ class FirebaseManager {
                         .filter { tip -> currentLikeList.contains(tip.id) })
             }
     }
+
     fun getAllTips(
         tipsLoadingState: MutableLiveData<Model.LoadingState>,
         callback: (List<Tip>) -> Unit,
@@ -89,6 +97,7 @@ class FirebaseManager {
                 tipsLoadingState.postValue(Model.LoadingState.LOADED)
             }
     }
+
     fun getAllUsers(callback: (List<OtherUser>) -> Unit) {
 
         db.collection(USERS_COLLECTION_PATH)
@@ -106,6 +115,7 @@ class FirebaseManager {
                 }
             }
     }
+
     fun addUserListener(
         onUser: (User) -> Unit,
         onError: (Exception) -> Unit,
@@ -128,28 +138,55 @@ class FirebaseManager {
                 }
             }
     }
-    fun updateUser(name: String, uri: String, callback: () -> Unit) {
+
+    fun updateUser(
+        name: String?,
+        bio: String?,
+        uri: String?, callback: () -> Unit,
+    ) {
         val user = Firebase.auth.currentUser
+        val mapOfOtherThingsButImage = mutableMapOf<String, Any>()
+        if (name != null)
+            mapOfOtherThingsButImage[User.NAME_KEY] = name
+        if (bio != null)
+            mapOfOtherThingsButImage[User.BIO_KEY] = bio
 
         if (user != null) {
-
-            dbimage.child(user.uid)
-                .putFile(uri.toUri())
-                .addOnSuccessListener { task ->
-                    task.metadata!!.reference!!.downloadUrl.addOnSuccessListener {
-                        db.collection(USERS_COLLECTION_PATH).document(user.uid).set(
-                            mapOf(
-                                "name" to name,
-                                "uri" to it,
-                                "lastUpdated" to FieldValue.serverTimestamp()
-                            ), SetOptions.merge()
-                        ).addOnCompleteListener {
-                            callback()
+            uri?.let { uri ->
+                dbimage.child(user.uid)
+                    .putFile(uri.toUri())
+                    .addOnSuccessListener { task ->
+                        task.metadata!!.reference!!.downloadUrl.addOnSuccessListener {
+                            if (name != null) {
+                                mapOfOtherThingsButImage[User.URI_KEY] = it
+                                db.collection(USERS_COLLECTION_PATH)
+                                    .document(user.uid)
+                                    .set(mapOfOtherThingsButImage, SetOptions.merge())
+                                    .addOnCompleteListener {
+                                        callback()
+                                    }
+                            } else {
+                                db.collection(USERS_COLLECTION_PATH)
+                                    .document(user.uid)
+                                    .set(mapOfOtherThingsButImage, SetOptions.merge())
+                                    .addOnCompleteListener {
+                                        callback()
+                                    }
+                            }
                         }
                     }
-                }
+            } ?: run {
+                db.collection(USERS_COLLECTION_PATH)
+                    .document(user.uid)
+                    .set(mapOfOtherThingsButImage, SetOptions.merge())
+                    .addOnCompleteListener {
+                        callback()
+                    }
+            }
+
         }
     }
+
     fun addUser(
         name: String,
         email: String,
@@ -181,6 +218,7 @@ class FirebaseManager {
                 }
             }
     }
+
     fun login(email: String, password: String, activity: Activity, callback: (Boolean) -> Unit) {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(activity) { task ->
@@ -193,9 +231,11 @@ class FirebaseManager {
                 }
             }
     }
+
     fun signOut() {
         auth.signOut()
     }
+
     fun getAllPosts(since: Long, callback: (List<Post>) -> Unit) {
         db.collection(POSTS_COLLECTION_PATH)
             .orderBy(
@@ -213,11 +253,11 @@ class FirebaseManager {
                         }
                         callback(posts)
                     }
-
                     false -> callback(listOf())
                 }
             }
     }
+
     fun updatePost(
         postUid: String,
         description: String,
@@ -232,6 +272,7 @@ class FirebaseManager {
             ), SetOptions.merge()
         ).addOnCompleteListener { callback() }
     }
+
     fun addPost(post: Post, callback: () -> Unit) {
         // post.postUid= postUid.toString()
         post.postUid = firebaseref.push().key!!
@@ -259,6 +300,7 @@ class FirebaseManager {
         }
 
     }
+
     fun removePost(post: Post, callback: () -> Unit) {
         db.collection(POSTS_COLLECTION_PATH)
             .document(post.postUid)
@@ -267,6 +309,7 @@ class FirebaseManager {
                 callback()
             }
     }
+
     fun getMyPosts(
         liveData: MutableLiveData<List<Post>>,
         loadingState: MutableLiveData<Model.LoadingState>,
@@ -297,6 +340,7 @@ class FirebaseManager {
             }
         }
     }
+
     fun getUserByName(name: String, callback: (List<User>?) -> Unit) {
         val query = db.collection(USERS_COLLECTION_PATH)
             .whereEqualTo("name", name)
@@ -315,6 +359,7 @@ class FirebaseManager {
                 }
             }
     }
+
     fun addMyTip(tip: MyTip) {
         val userId: String = auth.currentUser!!.uid
         db.collection(USERS_COLLECTION_PATH)
@@ -323,6 +368,7 @@ class FirebaseManager {
             .add(tip)
 
     }
+
     fun removeMyTip(tip: MyTip) {
         val userId: String = auth.currentUser!!.uid
 
@@ -333,6 +379,7 @@ class FirebaseManager {
             .delete()
 
     }
+
     fun dislikeTip(
         tip: Tip,
         currentDislikeList: MutableList<String>,
@@ -366,6 +413,7 @@ class FirebaseManager {
             .document(userId)
             .update(User.LIKE_KEY, currentLikeList)
     }
+
     fun undoDislikeTip(
         tip: Tip,
         currentDislikeList: MutableList<String>,
@@ -382,34 +430,71 @@ class FirebaseManager {
             .update(Tip.DISLIKES, tip.dislikes - 1)
 
     }
+
     fun toggleFriend(
         someOtherUser: User,
         userFriendList: MutableList<String>,
     ) {
         val userId: String = auth.currentUser!!.uid
+
         if (userFriendList.find { friendId -> friendId == someOtherUser.id } != null) {
             userFriendList.removeIf { friendId -> friendId == someOtherUser.id }
         } else {
             userFriendList.add(someOtherUser.id)
         }
 
+        someOtherUser.friendNotifications.add(FriendNotification(userId, false))
+
+        db.collection(USERS_COLLECTION_PATH)
+            .document(someOtherUser.id)
+            .update(FRIEND_REQUESTS_KEY, someOtherUser.friendNotifications)
+
         db.collection(USERS_COLLECTION_PATH)
             .document(userId)
             .update(User.FRIENDS_KEY, userFriendList)
     }
+
+    fun seeFriendNotifications(
+        userFriendNotifications: MutableList<FriendNotification>,
+    ) {
+        val userId: String = auth.currentUser!!.uid
+        db.collection(USERS_COLLECTION_PATH)
+            .document(userId)
+            .update(FRIEND_REQUESTS_KEY, userFriendNotifications.map { notification ->
+                notification.seen = true
+                return@map notification
+            })
+    }
+
+    fun removeFriendNotification(
+        userFriendNotifications: MutableList<FriendNotification>,
+        otherUserId: String,
+    ) {
+        val userId: String = auth.currentUser!!.uid
+        userFriendNotifications.removeIf { notification ->
+            notification.friendId == otherUserId
+        }
+        db.collection(USERS_COLLECTION_PATH)
+            .document(userId)
+            .update(FRIEND_REQUESTS_KEY, userFriendNotifications)
+    }
+
+
     fun toggleGoalTip(tip: Tip, userGoalsList: MutableList<Goal>) {
         val userId: String = auth.currentUser!!.uid
 
         if (userGoalsList.find { goal -> goal.tip.id == tip.id } != null) {
             userGoalsList.removeIf { goal -> goal.tip.id == tip.id }
         } else {
-            userGoalsList.add(Goal(tip.id,tip, false))
+            userGoalsList.add(Goal(tip.id, tip, false))
         }
 
         db.collection(USERS_COLLECTION_PATH)
             .document(userId)
             .update(User.GOALS_KEY, userGoalsList)
     }
+
+
 }
 
 

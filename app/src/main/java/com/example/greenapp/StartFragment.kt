@@ -23,41 +23,40 @@ class StartFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
         auth = Firebase.auth
     }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         // Inflate the layout for this fragment
-        val view= inflater.inflate(R.layout.fragment_start, container, false)
+        val view = inflater.inflate(R.layout.fragment_start, container, false)
         setupUI(view)
         return view
-
     }
-    private fun setupUI(view: View) {
 
+
+    private fun setupUI(view: View) {
 
         ConnectBtn = view.findViewById(R.id.Connectbtn)
         RegisterBtn = view.findViewById(R.id.Registerbtn)
         ConnectBtn?.setOnClickListener {
             val currentUser = auth.currentUser
             if (currentUser != null) {
-                Navigation.findNavController(view).navigate(R.id.action_startFragment_to_feedFragment)
-            }
-            else{
-                Navigation.findNavController(view).navigate(R.id.action_startFragment_to_loginFragment)
+                Navigation.findNavController(view)
+                    .navigate(R.id.action_startFragment_to_feedFragment)
+            } else {
+
+                Navigation.findNavController(view)
+                    .navigate(R.id.action_startFragment_to_loginFragment)
             }
         }
         RegisterBtn?.setOnClickListener {
-            Navigation.findNavController(view).navigate(R.id.action_startFragment_to_registerFragment)
+            Navigation.findNavController(view)
+                .navigate(R.id.action_startFragment_to_registerFragment)
         }
 
-    }
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        menu.clear()
-        super.onCreateOptionsMenu(menu, inflater)
     }
 
 }

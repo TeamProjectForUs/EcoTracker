@@ -1,6 +1,7 @@
 package com.example.greenapp.models
 
 import androidx.room.Entity
+
 @Entity(tableName = "otherUsers")
 class OtherUser(
     name: String,
@@ -9,13 +10,25 @@ class OtherUser(
     password: String,
     uri: String = IMAGE_DEFAULT,
     bio: String = "No bio",
+    friendRequests: MutableList<FriendNotification> = mutableListOf(),
     friends: MutableList<String> = mutableListOf(),
     tipDislikeList: MutableList<String> = mutableListOf(),
     currentLikeList: MutableList<String> = mutableListOf(),
     goals: MutableList<Goal> = mutableListOf(),
     isChecked: Boolean,
 ) : User(
-    name, id, email, password, uri, bio, friends, tipDislikeList, currentLikeList, goals, isChecked
+    name,
+    id,
+    email,
+    password,
+    uri,
+    bio,
+    friendRequests,
+    friends,
+    tipDislikeList,
+    currentLikeList,
+    goals,
+    isChecked
 ) {
     constructor() : this(
         "",
@@ -24,6 +37,7 @@ class OtherUser(
         "",
         "",
         "No bio",
+        mutableListOf(),
         mutableListOf(),
         mutableListOf(),
         mutableListOf(),

@@ -57,7 +57,9 @@ class MyGoalsFragment : BaseMenuProfileFragment() {
 
 
         sharedVm.currentUser.observe(viewLifecycleOwner) { user ->
-            adapter.setGoals(user.goals)
+            user?.let { user->
+                adapter.setGoals(user.goals)
+            }
         }
 
         binding.rvGoals.adapter = adapter

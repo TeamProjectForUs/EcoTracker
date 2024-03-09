@@ -14,6 +14,7 @@ import com.example.greenapp.R
 import com.squareup.picasso.Picasso
 
 class PostsRecyclerAdapter(
+    val currentUserId: String,
     var posts: List<Post>,
     var onProfile: Boolean = false
 ) : RecyclerView.Adapter<PostsRecyclerAdapter.PostViewHolder>() {
@@ -29,7 +30,7 @@ class PostsRecyclerAdapter(
 
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
         val post = posts.get(position)
-        holder.bind(post)
+        holder.bind(post, currentUserId)
     }
     class PostViewHolder(
         private val itemView: View,
@@ -58,13 +59,17 @@ class PostsRecyclerAdapter(
             }
         }
 
-        fun bind(post: Post) {
+        fun bind(post: Post, currentUserId: String) {
             this.post = post
             Picasso.get().load(post.uri.toUri()).resize(1000, 1000).centerInside().into(avatar)
 
             desTextView?.text = post.description
             if (!onProfile) {
                 postDeleteBtn?.visibility = View.GONE
+            }
+            if(post.userId != currentUserId) {
+                postDeleteBtn?.visibility = View.GONE
+                postEditBtn?.visibility = View.GONE
             }
             if (!post.isDefaultImage()) {
                 Picasso.get()
@@ -83,6 +88,11 @@ class PostsRecyclerAdapter(
             postEditBtn?.setOnClickListener {
                 Log.i("TAG", "PostViewHolder: Position clicked $adapterPosition")
                 listener?.onItemClick(adapterPosition)
+            }
+            if(currentUserId != post.userId) {
+                itemView.setOnClickListener {
+                    listener?.onItemClick(adapterPosition)
+                }
             }
             if (onProfile) {
                 postDeleteBtn?.setOnClickListener {

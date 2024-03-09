@@ -11,7 +11,9 @@ import com.example.greenapp.models.User
 @Dao
 interface UserDao {
     @Query("SELECT * FROM users LIMIT 1")
-    fun getCurrent(): LiveData<User>
+    fun getCurrent(): LiveData<User?>
+    @Query("DELETE FROM users")
+    fun deleteAllUsers()
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(vararg users: User)

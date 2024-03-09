@@ -12,5 +12,11 @@
     <string name="not_following">You are not following this user</string>
     <string name="unfollow">Unfollow</string>
     <string name="follow">Follow</string>
+    <string name="api_key">AIzaSyA_Hc5lxXfnu0GJcFXP_J9tdaknv3s7DSo</string>
+    <string name="please_give_permissions">Please provide the app with location permissions in order to view data on this page</string>
+    <string name="no_air_quality_services">We could not load any relevant air quality data for your current location, please try again later</string>
     <string name="following">You are following this user</string>
+    <string name="new_friend_requests">New Friend requests</string>
+    <string name="please_change_pass">Please click the confirmation button, we will send you a password change link to your email address</string>
+    <string name="air_quality">Air quality</string>
 </resources>

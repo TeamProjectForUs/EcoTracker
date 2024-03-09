@@ -1,5 +1,8 @@
 package com.example.greenapp
 
+import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
@@ -8,11 +11,14 @@ import android.view.View.VISIBLE
 import android.widget.ImageView
 import android.widget.PopupMenu
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
+import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
-import com.example.greenapp.models.Model
+import com.example.greenapp.database.Model
 import com.example.greenapp.modules.Common.SharedViewModel
 import com.google.android.material.button.MaterialButton
 
@@ -26,21 +32,27 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
     private var navController: NavController? = null
     private var activityMode: ActivityMode = ActivityMode.Main
+    private lateinit var toolbar: ConstraintLayout
+
+
+    private lateinit var menuBtn: ImageView
+    private lateinit var backButton: ImageView
+    private lateinit var editProfileBtn: MaterialButton
 
     private lateinit var sharedViewModel: SharedViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-//        Loader().loadAndSaveAllTips(resources)
+        toolbar = findViewById(R.id.toolbar)
         sharedViewModel = ViewModelProvider(this)[SharedViewModel::class.java]
         val navHostFragment: NavHostFragment? =
             supportFragmentManager.findFragmentById(R.id.navHostMain) as? NavHostFragment
         navController = navHostFragment?.navController
 
-        val menuButton = findViewById<ImageView>(R.id.menuBtn)
-        val backButton = findViewById<ImageView>(R.id.backBtn)
-        val editProfileBtn = findViewById<MaterialButton>(R.id.editProfileBtn)
+        editProfileBtn = findViewById(R.id.editProfileBtn)
+        menuBtn = findViewById(R.id.menuBtn)
+        backButton = findViewById(R.id.backBtn)
+        editProfileBtn = findViewById(R.id.editProfileBtn)
 
         editProfileBtn.setOnClickListener {
             navController?.navigate(R.id.action_global_editProfile)
@@ -54,7 +66,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             }
             back()
         }
-        menuButton.setOnClickListener {
+        menuBtn.setOnClickListener {
             val menu = PopupMenu(this@MainActivity, it)
             when (activityMode) {
                 is ActivityMode.Profile -> {
@@ -69,35 +81,92 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             menu.show()
         }
 
+        sharedViewModel.currentUser.observe(this) { user ->
+            if (user != null) {
+                requestLocationPermissions()
+            }
+        }
+
+        navController?.addOnDestinationChangedListener { controller, destination, arguments ->
+            if (destination.id == R.id.startFragment) {
+                hideMenu()
+            } else {
+                if (toolbar.visibility == GONE) showMenu()
+
+                if (destination.id == R.id.profileFragment) {
+                    showEditProfileBtn()
+                } else {
+                    hideEditProfileBtn()
+                }
+                if (destination.id == R.id.registerFragment
+                    || destination.id == R.id.loginFragment
+                ) {
+                    hideMenuOptions()
+                } else if (menuBtn.visibility == GONE) showMenuOptions()
+                if (destination.id == R.id.feedFragment) {
+                    hideBack()
+                } else {
+                    showBack()
+                }
+            }
+        }
+
     }
 
     fun showMenu() {
-        val view = findViewById<ConstraintLayout>(R.id.toolbar)
-        view.visibility = VISIBLE
+        toolbar.visibility = VISIBLE
     }
 
     fun setupProfileMenu() {
-        val editProfileBtn = findViewById<MaterialButton>(R.id.editProfileBtn)
         editProfileBtn.visibility = VISIBLE
         activityMode = ActivityMode.Profile
-
     }
 
     fun setupNormalMenu() {
-        val editProfileBtn = findViewById<MaterialButton>(R.id.editProfileBtn)
         editProfileBtn.visibility = GONE
         activityMode = ActivityMode.Main
-
     }
 
     fun hideMenu() {
-        val view = findViewById<ConstraintLayout>(R.id.toolbar)
-        view.visibility = GONE
+        toolbar.visibility = GONE
+    }
+
+    fun hideMenuOptions() {
+        menuBtn.visibility = GONE
+        editProfileBtn.visibility = GONE
+    }
+
+    fun showMenuOptions() {
+        menuBtn.visibility = VISIBLE
+        editProfileBtn.visibility = VISIBLE
+    }
+
+    fun hideBack() {
+        backButton.visibility = GONE
+    }
+
+    fun showBack() {
+        backButton.visibility = VISIBLE
+    }
+
+    fun showEditProfileBtn() {
+        editProfileBtn.visibility = VISIBLE
+    }
+
+    fun hideEditProfileBtn() {
+        editProfileBtn.visibility = GONE
     }
 
 
     override fun onMenuItemClick(item: MenuItem?): Boolean {
         if (item == null) return false
+
+        if (item.itemId == R.id.btnLogout_menu) {
+            hideMenu()
+        } else if (toolbar.visibility == GONE) {
+            showMenu()
+        }
+
         return when (item.itemId) {
             android.R.id.home -> {
                 navController?.navigateUp()
@@ -109,14 +178,15 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                 true
             }
 
-            R.id.btnLogout_menu -> {
-                Model.instance.userRepository.signOut()
-                navController?.navigate(R.id.action_global_startFragment)
+
+            R.id.btnAirQuality -> {
+                navController?.navigate(R.id.action_global_airQaulity)
                 true
             }
+            R.id.btnLogout_menu -> {
+                Model.instance.userRepository.signOut(lifecycleScope)
 
-            R.id.editProfileBtn -> {
-                navController?.navigate(R.id.action_global_profileViewFragment)
+                navController?.navigate(R.id.action_global_startFragment)
                 true
             }
 
@@ -124,6 +194,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                 navController?.navigate(R.id.action_global_tipsFragment)
                 true
             }
+
             R.id.btn_usersearch -> {
                 navController?.navigate(R.id.action_global_searchFragment)
                 true
@@ -160,6 +231,30 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
     fun getSharedViewModel(): SharedViewModel {
         return sharedViewModel
+    }
+
+    fun requestLocationPermissions() :Boolean {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+            == PackageManager.PERMISSION_DENIED
+            || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+            == PackageManager.PERMISSION_DENIED
+        ) {
+            ActivityCompat.requestPermissions(
+                this, arrayOf(
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ), 101
+            )
+            return false
+        }
+        return true
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == 101 && resultCode == RESULT_OK) {
+            sharedViewModel.getAirQuality(this)
+        }
     }
 
 }

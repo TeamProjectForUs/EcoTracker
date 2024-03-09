@@ -10,7 +10,7 @@
         android:id="@+id/userNameTv"
         android:layout_width="wrap_content"
         android:layout_height="75dp"
-        android:layout_marginTop="110dp"
+        android:layout_marginTop="90dp"
         android:text="EcoTracker"
         android:textColor="@color/black"
         android:textSize="40dp"
@@ -47,7 +47,6 @@
         android:id="@+id/notificationLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="2dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -144,7 +143,7 @@
 
             <EditText
                 android:id="@+id/usernameId"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Enter Username"
                 android:textColor="@color/black"
@@ -153,12 +152,39 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/bioLayout"
+            android:layout_width="400dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="91dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="50dp"
+                android:paddingStart="4dp"
+                android:text="Bio:"
+                android:textColor="@color/black"
+                android:textSize="15dp" />
+
+            <EditText
+                android:id="@+id/bioId"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter bio"
+                android:textColor="@color/black"
+                android:textSize="16dp" />
+
+        </LinearLayout>
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/editProfileSaveBtn"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:layout_gravity="center"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="20dp"
             android:backgroundTint="@color/white"
             android:padding="1dp"
             android:text="Save"

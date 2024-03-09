@@ -6,16 +6,17 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "users")
 open class User(
-    val name: String,
-    @PrimaryKey val id: String,
-    val email: String,
-    val password: String,
-    val uri: String = IMAGE_DEFAULT,
-    val bio: String = "No bio",
-    val friends: MutableList<String> = mutableListOf(),
-    val tipDislikeList: MutableList<String> = mutableListOf(),
-    val currentLikeList: MutableList<String> = mutableListOf(),
-    val goals: MutableList<Goal> = mutableListOf(),
+    var name: String,
+    @PrimaryKey var id: String,
+    var email: String,
+    var password: String,
+    var uri: String = IMAGE_DEFAULT,
+    var bio: String = "No bio",
+    var friendNotifications: MutableList<FriendNotification> = mutableListOf(),
+    var friends: MutableList<String> = mutableListOf(),
+    var tipDislikeList: MutableList<String> = mutableListOf(),
+    var currentLikeList: MutableList<String> = mutableListOf(),
+    var goals: MutableList<Goal> = mutableListOf(),
     var isChecked: Boolean,
 ) {
     fun getImage(): String {
@@ -39,6 +40,7 @@ open class User(
         mutableListOf(),
         mutableListOf(),
         mutableListOf(),
+        mutableListOf(),
         false
     )
 
@@ -46,6 +48,7 @@ open class User(
         const val LIKE_KEY = "currentLikeList"
         const val GOALS_KEY = "goals"
         const val FRIENDS_KEY = "friends"
+        const val FRIEND_REQUESTS_KEY = "friendNotifications"
         const val BIO_KEY = "bio"
         const val IMAGE_DEFAULT =
             "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg"

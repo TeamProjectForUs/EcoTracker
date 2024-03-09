@@ -6,11 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import com.example.greenapp.BaseMenuProfileFragment
 import com.example.greenapp.modules.Posts.AddPostFragment
 import com.example.greenapp.modules.Tips.TipsViewModel
@@ -157,10 +159,14 @@ class ProfileFragment : BaseMenuProfileFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         profileViewModel = ViewModelProvider(this)[ProfileViewModel::class.java]
-        getSharedViewModel()
-            .currentUser
+
+        val sharedVm = getSharedViewModel()
+        sharedVm.currentUser
             .observe(viewLifecycleOwner) { user ->
-                binding.userNameTv.text = user.name
+                user?.let { user ->
+                    binding.userNameTv.text = user.name
+                    binding.bioTv.text = user.bio
+                }
             }
 
         allPostsBtn = binding.allPostsBtn
@@ -168,6 +174,9 @@ class ProfileFragment : BaseMenuProfileFragment() {
         favoritesBtn = binding.favEcoTipsBtn
         goalsBtn = binding.goalsBbtn
         addPostBtn = binding.addPostBtn
+
+        createNotificationsMenu(binding.notificationsBtn)
+
 
         allPostsBtn.setOnClickListener {
             updateTabs(ProfileTab.AllPosts)
@@ -186,7 +195,7 @@ class ProfileFragment : BaseMenuProfileFragment() {
         }
 
         childFragmentManager.beginTransaction()
-            .add(R.id.profileContentFragment, getFragment(ProfileTab.AllPosts))
+            .replace(R.id.profileContentFragment, getFragment(ProfileTab.AllPosts))
             .commit()
 
         Navigation.createNavigateOnClickListener(R.id.action_myPostsFragment_to_addPostFragment)

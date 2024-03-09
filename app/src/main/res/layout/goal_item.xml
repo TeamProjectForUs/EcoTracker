@@ -7,13 +7,12 @@
     android:layout_height="wrap_content"
     android:padding="8dp">
 
-
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/tipCard"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
-        android:layout_marginStart="12dp"
+        android:layout_marginStart="32dp"
         android:layout_marginEnd="12dp"
         android:backgroundTint="@color/white"
         android:padding="8dp"
@@ -25,15 +24,20 @@
         app:strokeColor="@color/black"
         app:strokeWidth="1dp">
 
-        <LinearLayout
-            android:layout_width="337dp"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginHorizontal="16dp"
             android:orientation="horizontal">
 
             <TextView
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+
+                app:layout_constraintBottom_toBottomOf="parent"
                 android:id="@+id/tipDescriptionTv"
-                android:layout_width="331dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="8dp"
                 android:layout_marginStart="8dp"
@@ -41,7 +45,7 @@
                 android:textColor="@color/black"
                 android:textSize="20sp" />
 
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 
 

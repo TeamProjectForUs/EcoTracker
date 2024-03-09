@@ -7,18 +7,21 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.greenapp.BaseMenuFragment
-import com.example.greenapp.models.Model
+import com.example.greenapp.database.Model
 import com.example.greenapp.models.Tip
 import com.example.greenapp.R
 import com.example.greenapp.adapters.TipsAdapter
 import com.example.greenapp.databinding.FragmentTipsBinding
+import com.example.greenapp.modules.Profile.createNotificationsMenu
 
 class TipsFragment : BaseMenuFragment() {
 
@@ -57,7 +60,7 @@ class TipsFragment : BaseMenuFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         tipsRecyclerView = binding.rvTips
-
+        val sharedVm = getSharedViewModel()
 
         val allTipsBtn = binding.allTipsBtn
         val newTipsBtn = binding.newTipsBtn
@@ -102,6 +105,8 @@ class TipsFragment : BaseMenuFragment() {
                 tipsAdapter.setTipsData(tipsTypeAll)
             }
         }
+
+        createNotificationsMenu(binding.notificationsBtn)
 
         tipsAdapter = createTipsAdapter(tipsTypeAll, tipsViewModel)
 
@@ -159,7 +164,9 @@ fun BaseMenuFragment.createTipsAdapter(
         isLikedPage = isLikedPage,
     )
     sharedVm.currentUser.observe(viewLifecycleOwner) {
-        tipsAdapter.updateUserData(it)
+        it?.let { user ->
+            tipsAdapter.updateUserData(user)
+        }
     }
     return tipsAdapter
 }

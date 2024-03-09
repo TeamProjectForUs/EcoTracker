@@ -46,7 +46,7 @@ class ProfileViewFragment : BaseMenuFragment() {
         val sharedVm = getSharedViewModel()
 
         sharedVm.currentUser.observe(viewLifecycleOwner) { currentUser ->
-
+            if (currentUser == null) return@observe
             if (currentUser.friends.contains(user.id)) {
                 binding.onlyFriendsLayout.visibility = View.VISIBLE
                 ViewCompat.setBackgroundTintList(
@@ -67,10 +67,17 @@ class ProfileViewFragment : BaseMenuFragment() {
         }
 
         binding.onlyFriendsLayout.visibility = View.GONE
+
+
+        if(user.id == sharedVm.currentUser.value?.id) {
+            binding.addFriendBbtn.visibility = View.GONE
+        }
         binding.addFriendBbtn.setOnClickListener {
             val currentUserList = sharedVm.currentUser.value?.friends ?: mutableListOf()
             sharedVm.toggleFriend(user, currentUserList)
         }
+
+        createNotificationsMenu(binding.notificationsBtn)
 
         binding.profileName.text = user.name
         binding.bioArea.text = user.bio
