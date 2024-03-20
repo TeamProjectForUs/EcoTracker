@@ -13,10 +13,12 @@ import com.example.greenapp.models.OtherUser
 import com.example.greenapp.models.Post
 import com.example.greenapp.models.Tip
 import com.example.greenapp.models.User
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.lang.Exception
 
 class Model private constructor() {
 
@@ -92,10 +94,16 @@ class Model private constructor() {
 
         fun deleteCurrentUserCache(
             coroutineScope: CoroutineScope,
+            callback: (() -> Unit)? = null,
         ) {
             coroutineScope.launch {
                 withContext(Dispatchers.IO) {
+                    localDatabase.myTipsDao().deleteAll()
+                    localDatabase.goalsDao().deleteAll()
                     localDatabase.usersDao().deleteAllUsers()
+                    callback?.let {
+                        it()
+                    }
                 }
             }
         }
@@ -107,13 +115,18 @@ class Model private constructor() {
             password: String,
             uri: String,
             activity: Activity,
-            callback: (User?) -> Unit,
+            callback: (User?, Exception?) -> Unit,
         ) {
-            firebaseManager.addUser(name, email, password, uri, activity) {
-                it?.let { user ->
-                    cacheUser(coroutineScope, user)
+            deleteCurrentUserCache(coroutineScope) {
+                firebaseManager.addUser(name, email, password, uri, activity) { user, exception ->
+                    user?.let { user ->
+                        cacheUser(coroutineScope, user)
+                        callback(user, null)
+                    }
+                    exception?.let { exception ->
+                        callback(null, exception)
+                    }
                 }
-                callback(it)
             }
         }
 
@@ -129,12 +142,15 @@ class Model private constructor() {
         }
 
         fun login(
+            coroutineScope: CoroutineScope,
             email: String,
             password: String,
             activity: Activity,
             callback: (Boolean) -> Unit,
         ) {
-            firebaseManager.login(email, password, activity, callback)
+            deleteCurrentUserCache(coroutineScope) {
+                firebaseManager.login(email, password, activity, callback)
+            }
         }
 
         fun signOut(coroutineScope: CoroutineScope) {
@@ -344,10 +360,23 @@ class Model private constructor() {
             loadingState: MutableLiveData<LoadingState>,
         ): MutableLiveData<List<Post>> {
             val liveData = MutableLiveData<List<Post>>()
-            firebaseManager.getMyPosts(liveData, loadingState)
+            val id = FirebaseAuth.getInstance().uid ?: return liveData
+            firebaseManager.getPosts(id, liveData, loadingState)
             return liveData
         }
 
+        fun getUserPosts(
+            userId: String,
+            loadingState: MutableLiveData<LoadingState>,
+        ): MutableLiveData<List<Post>> {
+            val liveData = MutableLiveData<List<Post>>()
+            firebaseManager.getPosts(userId, liveData, loadingState)
+            return liveData
+        }
+
+        fun change5TipsToLatest() {
+            firebaseManager.update5TipsToLatest()
+        }
 
         fun addPost(
             post: Post,
@@ -473,6 +502,36 @@ class Model private constructor() {
                 callback
             )
         }
+
+        fun publishAchievement(
+            coroutineScope: CoroutineScope,
+            postsLoadingState: MutableLiveData<LoadingState>,
+            currentUser: User,
+            goal: Goal,
+            callback: (Post) -> Unit,
+        ) {
+            val auth = getFireBaseModel().getAuth()
+            val userId = auth.currentUser!!.uid
+            coroutineScope.launch {
+                withContext(Dispatchers.IO) {
+                    goal.done = true
+                    localDatabase.goalsDao().addGoal(goal)
+                }
+            }
+            postRepository.addPost(
+                Post(
+                    userId = userId,
+                    name = "",
+                    userUri = currentUser.getImage(),
+                    description = "I have achieved my goal: ${goal.tip.description} !",
+                    isChecked = false,
+                    postUid = ""
+                ), coroutineScope,
+                postsLoadingState,
+                callback
+            )
+        }
     }
+
 
 }

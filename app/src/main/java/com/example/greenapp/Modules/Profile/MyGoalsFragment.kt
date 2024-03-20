@@ -6,8 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.greenapp.BaseMenuProfileFragment
+import com.example.greenapp.R
 import com.example.greenapp.adapters.GoalsAdapter
 import com.example.greenapp.databinding.FragmentMyGoalsBinding
 
@@ -44,11 +46,22 @@ class MyGoalsFragment : BaseMenuProfileFragment() {
 
         adapter = GoalsAdapter(
             listOf(),
-            onCompleteGoal = sharedVm::completeGoal,
+            onCompleteGoal = { goal ->
+                sharedVm.completeGoal(goal)
+                MyGoalCompleteFragment(goal) {
+                    sharedVm.currentUser.value?.let { user ->
+                        profileViewModel.publishAchievement(user, goal) {
+                            Toast.makeText(requireContext(), "Goal published!", Toast.LENGTH_LONG)
+                                .show()
+                        }
+                    }
+                }.show(childFragmentManager, "Completed goal")
+            },
             onPublishGoal = { goal ->
                 sharedVm.currentUser.value?.let { user ->
-                    profileViewModel.publishGoal(user,goal) {
-                        Toast.makeText(requireContext(), "Goal published!", Toast.LENGTH_LONG).show()
+                    profileViewModel.publishGoal(user, goal) {
+                        Toast.makeText(requireContext(), "Goal published!", Toast.LENGTH_LONG)
+                            .show()
                     }
                 }
             },
@@ -57,7 +70,7 @@ class MyGoalsFragment : BaseMenuProfileFragment() {
 
 
         sharedVm.currentUser.observe(viewLifecycleOwner) { user ->
-            user?.let { user->
+            user?.let { user ->
                 adapter.setGoals(user.goals)
             }
         }

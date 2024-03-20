@@ -11,12 +11,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.greenapp.FeedFragment
 import com.example.greenapp.models.Post
 import com.example.greenapp.R
+import com.google.firebase.auth.FirebaseAuth
 import com.squareup.picasso.Picasso
 
 class PostsRecyclerAdapter(
     val currentUserId: String,
     var posts: List<Post>,
-    var onProfile: Boolean = false
+    var onProfile: Boolean = false,
 ) : RecyclerView.Adapter<PostsRecyclerAdapter.PostViewHolder>() {
     var listener: FeedFragment.OnItemClickListener? = null
 
@@ -25,13 +26,19 @@ class PostsRecyclerAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
         val itemView =
             LayoutInflater.from(parent.context).inflate(R.layout.post_layout_row, parent, false)
-        return PostViewHolder(itemView, listener, posts,onProfile)
+        return PostViewHolder(itemView, listener, posts, onProfile)
+    }
+
+    fun refreshPosts(list: List<Post>) {
+        posts = list
+        notifyDataSetChanged()
     }
 
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
         val post = posts.get(position)
         holder.bind(post, currentUserId)
     }
+
     class PostViewHolder(
         private val itemView: View,
         private val listener: FeedFragment.OnItemClickListener?,
@@ -67,7 +74,7 @@ class PostsRecyclerAdapter(
             if (!onProfile) {
                 postDeleteBtn?.visibility = View.GONE
             }
-            if(post.userId != currentUserId) {
+            if (post.userId != currentUserId) {
                 postDeleteBtn?.visibility = View.GONE
                 postEditBtn?.visibility = View.GONE
             }
@@ -89,7 +96,7 @@ class PostsRecyclerAdapter(
                 Log.i("TAG", "PostViewHolder: Position clicked $adapterPosition")
                 listener?.onItemClick(adapterPosition)
             }
-            if(currentUserId != post.userId) {
+            if (currentUserId != post.userId) {
                 itemView.setOnClickListener {
                     listener?.onItemClick(adapterPosition)
                 }

@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.greenapp.R
 import com.example.greenapp.adapters.PhotosAdapter
+import com.example.greenapp.models.User.Companion.IMAGE_DEFAULT
 
 class MyPhotosFragment : Fragment() {
 
@@ -33,10 +34,10 @@ class MyPhotosFragment : Fragment() {
         photosRv.layoutManager = GridLayoutManager(context, 3)
 
         profileViewModel.myPhotos.observe(viewLifecycleOwner) {
-            val adapter = PhotosAdapter(it)
+            val adapter = PhotosAdapter(it.filter { img-> img != IMAGE_DEFAULT }) { photo ->
+                MyPhotoFullFragment(photo).show(childFragmentManager, "Show full photo")
+            }
             photosRv.adapter = adapter
         }
-
-
     }
 }

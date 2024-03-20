@@ -1,5 +1,6 @@
 package com.example.greenapp.models
 
+import android.util.Log
 import com.example.greenapp.database.Model
 
 data class FriendNotificationPopulated(

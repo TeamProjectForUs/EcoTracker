@@ -9,6 +9,7 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import com.example.greenapp.database.Model
 import com.example.greenapp.R
@@ -41,15 +42,14 @@ class LoginFragment : Fragment() {
 
         ConnectButton?.setOnClickListener {
 
-
-
             val email=nameTextField?.text.toString()
             val password=PasswordTextField?.text.toString()
             ConnectButton?.isEnabled = false
-            Model.instance.userRepository.login(email,password,requireActivity()){
+            Model.instance.userRepository.login(lifecycleScope, email,password,requireActivity()){
                 if(it){
                     Toast.makeText(context, " login successful.", Toast.LENGTH_SHORT).show()
                     Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_feedFragment)
+
                 }
                 else{
                     Toast.makeText(context, " login failed.", Toast.LENGTH_SHORT).show()

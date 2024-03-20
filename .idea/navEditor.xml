@@ -83,6 +83,11 @@
                       <LayoutPositions />
                     </value>
                   </entry>
+                  <entry key="action_global_airQaulity">
+                    <value>
+                      <LayoutPositions />
+                    </value>
+                  </entry>
                   <entry key="action_global_editProfile">
                     <value>
                       <LayoutPositions />
@@ -247,6 +252,18 @@
                       </LayoutPositions>
                     </value>
                   </entry>
+                  <entry key="myGoalCompleteFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="1340" />
+                            <option name="y" value="883" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
                   <entry key="myGoalsFragment">
                     <value>
                       <LayoutPositions>
@@ -309,8 +326,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="1232" />
-                            <option name="y" value="510" />
+                            <option name="x" value="1299" />
+                            <option name="y" value="525" />
                           </Point>
                         </option>
                       </LayoutPositions>

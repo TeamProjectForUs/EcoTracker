@@ -124,6 +124,7 @@ class EditProfileFragment : BaseMenuFragment() {
                     getSharedViewModel()
                         .currentUser
                         .removeObservers(viewLifecycleOwner)
+                    bioEditTextView?.text = user.bio
                 }
 
             }

@@ -6,7 +6,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.greenapp.databinding.ItemPhotoBinding
 import com.squareup.picasso.Picasso
 
-class PhotosAdapter(private val photos: List<String>) :
+class PhotosAdapter(
+    private val photos: List<String>,
+    private val onClickPhoto: (String) -> Unit,
+) :
     RecyclerView.Adapter<PhotosAdapter.PhotosViewHolder>() {
 
     class PhotosViewHolder(private val photosBinding: ItemPhotoBinding) :
@@ -27,6 +30,9 @@ class PhotosAdapter(private val photos: List<String>) :
     override fun onBindViewHolder(holder: PhotosViewHolder, position: Int) {
         val photo = photos[position]
         Picasso.get().load(photo).into(holder.imageView)
+        holder.itemView.setOnClickListener {
+            onClickPhoto(photo)
+        }
     }
 
 }

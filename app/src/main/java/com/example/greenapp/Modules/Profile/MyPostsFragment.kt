@@ -56,6 +56,11 @@ class MyPostsFragment : BaseFragment() {
             onProfile = true
         )
         val userId = sharedVm.currentUser.value?.id ?: ""
+
+
+        binding.pullToRefresh.setOnRefreshListener {
+            binding.pullToRefresh.isRefreshing = false
+        }
         adapter.listener = object : FeedFragment.OnItemClickListener {
 
             override fun onItemClick(position: Int) {

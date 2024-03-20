@@ -1,5 +1,7 @@
 package com.example.greenapp.adapters
 
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -38,6 +40,10 @@ class GoalsAdapter(
     override fun onBindViewHolder(holder: GoalsViewHolder, position: Int) {
         val goal = goals[position]
         holder.goalItemBinding.tipDescriptionTv.text = goal.tip.description
+        if(goal.done) {
+            holder.goalItemBinding.completeGoalBtn.imageTintList = ColorStateList.valueOf(Color.GREEN)
+        }
+
         holder.goalItemBinding.completeGoalBtn.setOnClickListener {
             onCompleteGoal.invoke(goal)
         }

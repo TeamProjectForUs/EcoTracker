@@ -33,8 +33,8 @@ class RegisterFragment : Fragment() {
         return view
     }
 
-    private fun setupUI(view: View) {
 
+    private fun setupUI(view: View) {
 
         registerBtn = view.findViewById(R.id.signupbtn)
         nameTextField = view.findViewById(R.id.username)
@@ -47,20 +47,24 @@ class RegisterFragment : Fragment() {
             val email = emailTextField?.text.toString()
             val password = passwordTextField?.text.toString()
             registerBtn?.isEnabled = false
+
             Model.instance.userRepository.addUser(
                 lifecycleScope,
                 name,
                 email,
                 password,
                 " ", requireActivity()
-            ) {
-                it?.let {
+            ) { user, exception ->
+                user?.let {
                     Toast.makeText(context, "Sign up is successful", Toast.LENGTH_SHORT).show()
-
                     Navigation.findNavController(view)
                         .navigate(R.id.action_registerFragment_to_feedFragment)
                 } ?: run {
-                    Toast.makeText(context, "Sign up is failed", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        exception?.message ?: "Sign up is failed",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
                 registerBtn?.isEnabled = true
             }

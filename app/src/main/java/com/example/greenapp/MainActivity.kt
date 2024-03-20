@@ -43,6 +43,8 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        // uncomment to set first 5 tips to current date
+        //Model.instance.postRepository.change5TipsToLatest()
         toolbar = findViewById(R.id.toolbar)
         sharedViewModel = ViewModelProvider(this)[SharedViewModel::class.java]
         val navHostFragment: NavHostFragment? =

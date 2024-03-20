@@ -17,6 +17,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
@@ -41,6 +42,19 @@ class FirebaseManager {
         const val POSTS_COLLECTION_PATH = "posts"
         const val TIPS_COLLECTION_PATH = "tips"
         const val FAVORITE_TIPS = "favorite_tips"
+    }
+
+    fun update5TipsToLatest() {
+        val ts = System.currentTimeMillis()
+        db.collection(TIPS_COLLECTION_PATH)
+            .limit(5)
+            .get()
+            .addOnSuccessListener {
+                it.documents.forEach { doc->
+                    doc.reference.update("addedAt", ts)
+                    doc.reference.update(FieldPath.of("json","addedAt"), ts)
+                }
+            }
     }
 
     fun getDB(): FirebaseFirestore {
@@ -193,7 +207,7 @@ class FirebaseManager {
         password: String,
         uri: String,
         activity: Activity,
-        callback: (User?) -> Unit,
+        callback: (User?, Exception?) -> Unit,
     ) {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(activity) { task ->
@@ -210,16 +224,17 @@ class FirebaseManager {
                         .document(user.id)
                         .set(user)
                         .addOnSuccessListener {
-                            callback(user)
+                            callback(user, null)
                         }
 
                 } else {
-                    callback(null)
+                    callback(null, task.exception)
                 }
             }
     }
 
     fun login(email: String, password: String, activity: Activity, callback: (Boolean) -> Unit) {
+
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(activity) { task ->
                 if (task.isSuccessful) {
@@ -310,14 +325,15 @@ class FirebaseManager {
             }
     }
 
-    fun getMyPosts(
+    fun getPosts(
+        userId: String,
         liveData: MutableLiveData<List<Post>>,
         loadingState: MutableLiveData<Model.LoadingState>,
     ) {
         // Build a query to filter posts by username
 
         val query = db.collection(POSTS_COLLECTION_PATH)
-            .whereEqualTo(Post.USERID_KEY, auth.currentUser?.uid)
+            .whereEqualTo(Post.USERID_KEY, userId)
             .orderBy(Post.DATE_POSTED, com.google.firebase.firestore.Query.Direction.DESCENDING)
 
         query.get().addOnCompleteListener {

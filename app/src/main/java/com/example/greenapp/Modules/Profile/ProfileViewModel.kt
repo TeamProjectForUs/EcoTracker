@@ -99,6 +99,24 @@ class ProfileViewModel : ViewModel(), TipsGoalsRepository {
         }
     }
 
+    fun publishAchievement(
+        user: User,
+        goal: Goal,
+        callback: () -> Unit,
+    ) {
+        Model.instance.goalRepository.publishAchievement(
+            viewModelScope,
+            myPostsLoadingState,
+            user,
+            goal
+        ) {
+            val currentPosts = (myPosts.value ?: listOf()).toMutableList()
+            currentPosts.add(it)
+            _myPosts.postValue(currentPosts)
+            callback()
+        }
+    }
+
     fun addMyTip(tip: MyTip) {
         Model.instance.tipsRepository.addMyTip(tip)
     }

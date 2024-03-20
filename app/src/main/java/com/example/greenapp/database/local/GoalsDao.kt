@@ -14,6 +14,10 @@ interface GoalsDao {
     fun getAllGoalsLive(): LiveData<List<Goal>>
     @Query("SELECT * FROM goals")
     suspend fun getAllGoals(): List<Goal>
+
+    @Query("DELETE FROM goals")
+    suspend fun deleteAll()
+
     @Delete
     suspend fun deleteGoal(goal: Goal)
 

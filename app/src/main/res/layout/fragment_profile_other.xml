@@ -109,15 +109,6 @@
             app:strokeColor="@color/black"
             app:strokeWidth="1dp" />
 
-        <TextView
-            android:id="@+id/UserName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center"
-            android:text="User Name"
-            android:textColor="@color/black"
-            android:textSize="35dp" />
 
         <TextView
             android:id="@+id/bioLabel"

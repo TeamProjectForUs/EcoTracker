@@ -27,6 +27,7 @@
         android:id="@+id/action_global_profileViewFragment"
         app:destination="@id/profileViewFragment" />
 
+
     <action
         android:id="@+id/action_global_addPostFragment"
         app:destination="@id/addPostFragment" />
@@ -207,7 +208,6 @@
         android:id="@+id/action_global_editProfile"
         app:destination="@id/editProfileFragment" />
 
-
     <action
         android:id="@+id/action_global_airQaulity"
         app:destination="@id/airQualityFragment" />
@@ -226,8 +226,8 @@
         android:label="MyAlertsFragment"
         tools:layout="@layout/fragment_my_alerts" />
     <fragment
-        tools:layout="@layout/fragment_air_quality"
         android:id="@+id/airQualityFragment"
         android:name="com.example.greenapp.modules.AirQuality.AirQualityFragment"
-        android:label="AirQualityFragment" />
+        android:label="AirQualityFragment"
+        tools:layout="@layout/fragment_air_quality" />
 </navigation>

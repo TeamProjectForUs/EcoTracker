@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.ProgressBar
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,6 +23,8 @@ import com.example.greenapp.modules.Common.SharedViewModel
 import com.example.greenapp.modules.Profile.createNotificationsMenu
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 class FeedFragment : BaseMenuFragment() {
@@ -55,6 +58,8 @@ class FeedFragment : BaseMenuFragment() {
         postsRecyclerView = binding.rvPostsFragmentList
         postsRecyclerView?.setHasFixedSize(true)
         postsRecyclerView?.layoutManager = LinearLayoutManager(context)
+
+
         viewModel.currentUser.observe(viewLifecycleOwner) { user ->
             if (user != null) {
                 adapter = PostsRecyclerAdapter(
@@ -84,11 +89,13 @@ class FeedFragment : BaseMenuFragment() {
             }
         }
 
-
+        lifecycleScope.launch {
+            delay(500)
+            reloadData()
+        }
 
 
         createNotificationsMenu(binding.notificationsFeedBtn)
-
 
         val addPostButton: ImageView = view.findViewById(R.id.add_post_feedBtn)
 

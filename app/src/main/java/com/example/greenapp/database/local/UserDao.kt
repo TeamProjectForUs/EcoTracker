@@ -14,11 +14,9 @@ interface UserDao {
     fun getCurrent(): LiveData<User?>
     @Query("DELETE FROM users")
     fun deleteAllUsers()
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(vararg users: User)
 
     @Delete
     fun delete(user: User)
-
 }

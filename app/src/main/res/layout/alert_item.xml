@@ -18,7 +18,7 @@
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/alertCard"
         android:layout_width="315dp"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
@@ -36,14 +36,15 @@
         app:strokeWidth="1dp">
 
         <LinearLayout
-            android:layout_width="281dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/alertDescriptionTv"
-                android:layout_width="265dp"
+                android:layout_width="match_parent"
+                android:maxLines="3"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="8dp"
                 android:layout_marginStart="8dp"
