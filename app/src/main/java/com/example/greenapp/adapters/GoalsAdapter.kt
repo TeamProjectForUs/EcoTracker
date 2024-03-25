@@ -24,7 +24,7 @@ class GoalsAdapter(
     }
 
     fun setGoals(goals: List<Goal>) {
-        this.goals = goals
+        this.goals = goals.sortedBy { it.done }
         notifyDataSetChanged()
     }
 

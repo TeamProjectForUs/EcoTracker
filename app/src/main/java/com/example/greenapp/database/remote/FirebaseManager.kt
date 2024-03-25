@@ -157,6 +157,7 @@ class FirebaseManager {
         name: String?,
         bio: String?,
         uri: String?, callback: () -> Unit,
+        callBackWithImage: (String?) -> Unit
     ) {
         val user = Firebase.auth.currentUser
         val mapOfOtherThingsButImage = mutableMapOf<String, Any>()
@@ -166,11 +167,24 @@ class FirebaseManager {
             mapOfOtherThingsButImage[User.BIO_KEY] = bio
 
         if (user != null) {
+
             uri?.let { uri ->
                 dbimage.child(user.uid)
                     .putFile(uri.toUri())
                     .addOnSuccessListener { task ->
                         task.metadata!!.reference!!.downloadUrl.addOnSuccessListener {
+                            callBackWithImage(it.toString())
+                            db.collection(POSTS_COLLECTION_PATH)
+                                .whereEqualTo(Post.USERID_KEY, user.uid)
+                                .get()
+                                .addOnSuccessListener { snap ->
+                                    snap.forEach { doc ->
+
+                                        doc.reference.update(Post.USER_URI_KEY, it.toString())
+                                        if(name!=null)
+                                            doc.reference.update(Post.NAME_KEY, name)
+                                    }
+                                }
                             if (name != null) {
                                 mapOfOtherThingsButImage[User.URI_KEY] = it
                                 db.collection(USERS_COLLECTION_PATH)
@@ -195,6 +209,16 @@ class FirebaseManager {
                     .set(mapOfOtherThingsButImage, SetOptions.merge())
                     .addOnCompleteListener {
                         callback()
+                    }
+                callBackWithImage(null)
+                db.collection(POSTS_COLLECTION_PATH)
+                    .whereEqualTo(Post.USERID_KEY, user.uid)
+                    .get()
+                    .addOnSuccessListener { snap ->
+                        snap.forEach { doc ->
+                            if(name!=null)
+                                doc.reference.update(Post.NAME_KEY, name)
+                        }
                     }
             }
 

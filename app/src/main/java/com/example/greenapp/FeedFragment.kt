@@ -89,11 +89,6 @@ class FeedFragment : BaseMenuFragment() {
             }
         }
 
-        lifecycleScope.launch {
-            delay(500)
-            reloadData()
-        }
-
 
         createNotificationsMenu(binding.notificationsFeedBtn)
 
@@ -104,9 +99,10 @@ class FeedFragment : BaseMenuFragment() {
         addPostButton.setOnClickListener(action)
 
         viewModel.posts.observe(viewLifecycleOwner) {
-            adapter?.posts = it
-            adapter?.notifyDataSetChanged()
-            progressBar?.visibility = View.GONE
+            if(it !=null && it.size >0 ) {
+                adapter?.refreshPosts(it)
+                progressBar?.visibility = View.GONE
+            }
         }
 
         binding.pullToRefresh.setOnRefreshListener {
@@ -116,7 +112,6 @@ class FeedFragment : BaseMenuFragment() {
         viewModel.postsListLoadingState.observe(viewLifecycleOwner) { state ->
             binding.pullToRefresh.isRefreshing = state == Model.LoadingState.LOADING
         }
-
 
         return view
     }

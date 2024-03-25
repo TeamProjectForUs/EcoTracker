@@ -50,7 +50,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="64dp"
-            android:text="Enter Username:"
+            android:text="Enter Email:"
             android:textAlignment="center"
             android:textColor="#000000"
             android:textSize="16sp"
@@ -93,11 +93,18 @@
             android:textColor="#000000"
             android:textColorHint="#000000" />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:textAlignment="center"
+            android:layout_marginTop="32dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/forgotPwd"
+            android:text="@string/forgot_password_click_here"/>
         <com.google.android.material.button.MaterialButton
             android:id="@+id/Connectbtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="60dp"
+            android:layout_marginTop="8dp"
             android:backgroundTint="@android:color/white"
             android:text="connect"
             app:cornerRadius="100dp"

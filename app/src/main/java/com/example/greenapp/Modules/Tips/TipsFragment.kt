@@ -60,7 +60,6 @@ class TipsFragment : BaseMenuFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         tipsRecyclerView = binding.rvTips
-        val sharedVm = getSharedViewModel()
 
         val allTipsBtn = binding.allTipsBtn
         val newTipsBtn = binding.newTipsBtn

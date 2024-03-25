@@ -44,6 +44,8 @@ class AirQualityFragment : BaseMenuFragment() {
         }
         binding.qualityTv.visibility = View.GONE
         binding.qualityBar.visibility = View.GONE
+
+
         sharedVm.airQuality.observe(viewLifecycleOwner) { airQuality ->
             if (airQuality == null) {
                 // user did not give location permissions

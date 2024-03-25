@@ -10,7 +10,7 @@ import com.google.firebase.firestore.FieldValue
 
 @Entity
 data class Post(
-    val name: String,
+    var name: String,
     var userUri: String = IMAGE_DEFAULT,
     var uri: String = IMAGE_DEFAULT,
     val description: String,

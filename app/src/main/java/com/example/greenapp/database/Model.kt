@@ -131,14 +131,32 @@ class Model private constructor() {
         }
 
         fun updateUser(
+            coroutineScope: CoroutineScope,
             name: String?,
             bio: String?,
             uri: String?,
             callback: () -> Unit,
         ) {
-            firebaseManager.updateUser(name, bio, uri) {
+
+            firebaseManager.updateUser(name, bio, uri, callback= {
                 callback()
-            }
+            }, callBackWithImage =  { newUri ->
+                coroutineScope.launch {
+                    withContext(Dispatchers.IO){
+                        val id = FirebaseAuth.getInstance().uid
+                        id?.let {
+                            val posts = localDatabase.postDao().getUserPosts(id)
+                            posts.forEach {
+                                if(newUri!=null)
+                                    it.userUri = newUri
+                                if(name!=null)
+                                    it.name = name
+                            }
+                            localDatabase.postDao().insert(posts)
+                        }
+                    }
+                }
+            })
         }
 
         fun login(

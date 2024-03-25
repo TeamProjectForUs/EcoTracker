@@ -60,6 +60,7 @@ class ProfileViewFragment : BaseMenuFragment() {
             Log.d("posts!", posts.size.toString())
             adapter.refreshPosts(posts)
         }
+
         sharedVm.currentUser.observe(viewLifecycleOwner) { currentUser ->
             if (currentUser == null) return@observe
             if (currentUser.friends.contains(user.id)) {
@@ -85,6 +86,7 @@ class ProfileViewFragment : BaseMenuFragment() {
             val dialogOtherAchievements = FriendAchievements(user.goals.filter { g -> g.done })
             dialogOtherAchievements.show(childFragmentManager, "otherUserAchievements")
         }
+
         binding.userOtherPosts.setOnClickListener {
             val dialogOtherPosts = FriendPosts(adapter)
             dialogOtherPosts.show(childFragmentManager, "otherUserPosts")

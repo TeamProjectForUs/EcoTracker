@@ -94,9 +94,6 @@
             android:id="@+id/action_myPostsFragment_to_profileViewFragment"
             app:destination="@id/profileViewFragment" />
         <action
-            android:id="@+id/action_myPostsFragment_to_postFullViewFragment"
-            app:destination="@id/postFullViewFragment" />
-        <action
             android:id="@+id/action_myPostsFragment_to_addPostFragment"
             app:destination="@id/addPostFragment" />
     </fragment>

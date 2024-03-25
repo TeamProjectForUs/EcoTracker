@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toUri
 import androidx.core.widget.addTextChangedListener
+import androidx.lifecycle.lifecycleScope
 import com.example.greenapp.BaseMenuFragment
 import com.example.greenapp.database.Model
 import com.example.greenapp.R
@@ -82,6 +83,8 @@ class EditProfileFragment : BaseMenuFragment() {
             cancelBtn.setOnClickListener {
                 alert.dismiss()
             }
+
+
             okBtn.setOnClickListener {
                 // send the user a email to reset his password
                 getSharedViewModel().currentUser.value?.let { user ->
@@ -154,7 +157,7 @@ class EditProfileFragment : BaseMenuFragment() {
                 bio = getSharedViewModel().currentUser.value?.bio
             }
 
-            Model.instance.userRepository.updateUser(name, bio, uri) {
+            Model.instance.userRepository.updateUser(lifecycleScope, name, bio, uri) {
                 Toast.makeText(requireContext(), "Changes saved", Toast.LENGTH_SHORT).show()
             }
         }

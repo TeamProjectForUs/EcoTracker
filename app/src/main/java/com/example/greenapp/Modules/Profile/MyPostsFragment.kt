@@ -67,7 +67,7 @@ class MyPostsFragment : BaseFragment() {
                 val post = posts[position]
                 post.let {
                     val action =
-                        MyPostsFragmentDirections.actionMyPostsFragmentToPostFullViewFragment(
+                        MyPostsFragmentDirections.actionGlobalPostFullViewFragment(
                             it.postUid,
                             it.uri,
                             it.name,

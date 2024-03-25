@@ -29,6 +29,7 @@ class PostsRecyclerAdapter(
         return PostViewHolder(itemView, listener, posts, onProfile)
     }
 
+
     fun refreshPosts(list: List<Post>) {
         posts = list
         notifyDataSetChanged()
@@ -52,7 +53,6 @@ class PostsRecyclerAdapter(
         private var postDeleteBtn: ImageView? = null
 
         private var avatar: ImageView? = null
-        var post: Post? = null
 
         init {
             imageView = itemView.findViewById(R.id.tvPostListRowImage)
@@ -60,23 +60,23 @@ class PostsRecyclerAdapter(
             desTextView = itemView.findViewById(R.id.tvPostListRowDes)
             postDeleteBtn = itemView.findViewById(R.id.ivDelete)
             avatar = itemView.findViewById(R.id.ivPostListRowAvatar)
-
-            itemView.setOnClickListener {
-
-            }
+            itemView.setOnClickListener {}
         }
 
         fun bind(post: Post, currentUserId: String) {
-            this.post = post
-            Picasso.get().load(post.uri.toUri()).resize(1000, 1000).centerInside().into(avatar)
-
             desTextView?.text = post.description
-            if (!onProfile) {
-                postDeleteBtn?.visibility = View.GONE
-            }
-            if (post.userId != currentUserId) {
+
+            if (post.userId != FirebaseAuth.getInstance().uid) {
                 postDeleteBtn?.visibility = View.GONE
                 postEditBtn?.visibility = View.GONE
+            }else {
+                postDeleteBtn?.visibility = View.VISIBLE
+                postEditBtn?.visibility = View.VISIBLE
+            }
+            if (!onProfile) {
+                postDeleteBtn?.visibility = View.GONE
+            }else {
+                postDeleteBtn?.visibility = View.VISIBLE
             }
             if (!post.isDefaultImage()) {
                 Picasso.get()
@@ -84,26 +84,30 @@ class PostsRecyclerAdapter(
                     .resize(1000, 1000)
                     .centerInside()
                     .into(imageView)
+                imageView?.visibility = View.VISIBLE
             } else {
                 imageView?.visibility = View.GONE
             }
+
             Picasso.get()
                 .load(post.userUri.toUri())
                 .resize(1000, 1000)
                 .centerInside()
                 .into(avatar)
+
             postEditBtn?.setOnClickListener {
-                Log.i("TAG", "PostViewHolder: Position clicked $adapterPosition")
                 listener?.onItemClick(adapterPosition)
             }
-            if (currentUserId != post.userId) {
+
+            if (FirebaseAuth.getInstance().uid != post.userId) {
                 itemView.setOnClickListener {
                     listener?.onItemClick(adapterPosition)
                 }
             }
+
             if (onProfile) {
                 postDeleteBtn?.setOnClickListener {
-                    listener?.onItemClickRemove(position)
+                    listener?.onItemClickRemove(adapterPosition)
                 }
             }
         }

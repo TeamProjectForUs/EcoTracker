@@ -19,4 +19,6 @@
     <string name="new_friend_requests">New Friend requests</string>
     <string name="please_change_pass">Please click the confirmation button, we will send you a password change link to your email address</string>
     <string name="air_quality">Air quality</string>
+    <string name="forgot_password_click_here">Forgot password? click here</string>
+    <string name="enter_email_address">Enter email address</string>
 </resources>
